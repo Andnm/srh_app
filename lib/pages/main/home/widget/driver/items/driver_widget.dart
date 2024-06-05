@@ -10,7 +10,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
+
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -40,7 +40,7 @@ class DriverWidget extends StatelessWidget {
               Get.find<MainController>().updateIsShowBottom(false);
             });
           }
-          if (controller.isCheckIn) {
+          if (controller.isCheckInOrOut) {
             controller.initCamera();
           }
 
@@ -284,7 +284,7 @@ class DriverWidget extends StatelessWidget {
               child: SafeArea(
                 child: Obx(
                   () => Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       controller.isCaptured.value
                           ? Expanded(
@@ -307,55 +307,56 @@ class DriverWidget extends StatelessWidget {
                               ),
                             )
                           : Expanded(child: SizedBox()),
-                      SizedBox(width: 32.w),
+
                       Expanded(
                         child: ElevatedButton(
-                          onPressed: () async {
-                            if (!controller.isCaptured.value) {
-                              controller.pickImageFromCamera(controller
-                                  .imageTypes[controller.imageIndex.value]);
-                            } else {
-                              print("Image Index tien: " +
-                                  controller.imageIndex.value.toString());
-                              if (controller.imageIndex.value <
-                                  controller.imageTypes.length - 1) {
-                                // Gọi API khi nhấn vào biểu tượng mũi tên tiến
+                          onPressed: controller.isResponsedBooking.value
+                              ? null
+                              : () async {
+                                  controller.isResponsedBooking.value = true;
+                                  if (!controller.isCaptured.value) {
+                                    await controller.pickImageFromCamera(
+                                        controller.imageTypes[
+                                            controller.imageIndex.value]);
+                                  } else {
+                                    print("Image Index tien: " +
+                                        controller.imageIndex.value.toString());
+                                    if (controller.imageIndex.value <
+                                        controller.imageTypes.length - 1) {
+                                      // Gọi API khi nhấn vào biểu tượng mũi tên tiến
 
-                                await controller.checkInAndOut();
-                                controller.isCaptured.value = false;
-                                controller.imageIndex.value++;
-                              } else {
-                                // Gọi API cho ảnh cuối cùng
+                                      await controller.checkInAndOut();
 
-                                EasyLoading.show(
-                                    indicator:
-                                        const CircularProgressIndicator(),
-                                    maskType: EasyLoadingMaskType.clear,
-                                    dismissOnTap: true);
+                                      controller.isCaptured.value = false;
+                                      controller.imageIndex.value++;
+                                    } else {
+                                      // Gọi API cho ảnh cuối cùng
 
-                                await controller.checkInAndOut();
-                                await controller.addNotes(
-                                    isCheckIn: controller.isCheckInApi.value);
-                                EasyLoading.dismiss();
+                                      await controller.checkInAndOut();
+                                      await controller.addNotes(
+                                          isCheckIn:
+                                              controller.isCheckInApi.value);
 
-                                // Xử lý khi đã chụp và gửi đủ số lượng ảnh
-                                // controller.responseBooking();
-                                controller.isDoneCaptured.value = true;
-                                controller.imageIndex.value = 0;
-                                controller.isCheckInApi.value = false;
-                                controller.isCaptured.value = false;
+                                      // Xử lý khi đã chụp và gửi đủ số lượng ảnh
+                                      // controller.responseBooking();
+                                      controller.isDoneCaptured.value = true;
+                                      controller.imageIndex.value = 0;
+                                      controller.isCheckInApi.value = false;
+                                      controller.isCaptured.value = false;
 
-                                controller.state.imageFiles.clear();
-                                if (controller.isCheckOut) {
-                                  controller.isFinishCheckOut.value = true;
-                                }
-                                print(
-                                    "CLEAR INPUT ${controller.imageIndex.value}");
+                                      controller.state.imageFiles.clear();
+                                      if (controller.isCheckOut) {
+                                        controller.isFinishCheckOut.value =
+                                            true;
+                                      }
+                                      print(
+                                          "CLEAR INPUT ${controller.imageIndex.value}");
 
-                                Get.back();
-                              }
-                            }
-                          },
+                                      Get.back();
+                                    }
+                                  }
+                                  controller.isResponsedBooking.value = false;
+                                },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: !controller.isCaptured.value
                                 ? AppColors.whiteColor.withOpacity(0.5)
@@ -380,7 +381,7 @@ class DriverWidget extends StatelessWidget {
                       controller.isCaptured.value
                           ? Expanded(
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   IconButton(
@@ -977,11 +978,12 @@ class DriverWidget extends StatelessWidget {
                 children: [
                   CircleAvatar(
                     radius: 25.r,
-                    backgroundImage: (controller.customerInfo?.avatar != null)
-                        ? NetworkImage(
-                            SERVER_API_URL + controller.customerInfo!.avatar!)
-                        : AssetImage('assets/images/avatarman.png')
-                            as ImageProvider,
+                    backgroundImage:
+                        (controller.customerOnBehalfInfo?.imageUrl != null)
+                            ? NetworkImage(
+                                controller.customerOnBehalfInfo!.imageUrl!)
+                            : AssetImage('assets/images/avatarman.png')
+                                as ImageProvider,
                   ),
                   Text(
                     controller.customerOnBehalfInfo?.name ?? '',

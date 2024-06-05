@@ -112,13 +112,16 @@ class CustomerBookedOnBehalf {
   String? name;
   String? phoneNumber;
   String? note;
+  String? imageUrl;
 
-  CustomerBookedOnBehalf({this.name, this.phoneNumber, this.note});
+  CustomerBookedOnBehalf(
+      {this.name, this.phoneNumber, this.note, this.imageUrl});
 
   CustomerBookedOnBehalf.fromJson(Map<String, dynamic> json) {
     name = json['name'];
     phoneNumber = json['phoneNumber'];
     note = json['note'];
+    imageUrl = json['imageUrl'];
   }
 
   Map<String, dynamic> toJson() {
@@ -126,11 +129,12 @@ class CustomerBookedOnBehalf {
     data['name'] = this.name;
     data['phoneNumber'] = this.phoneNumber;
     data['note'] = this.note;
+    data['imageUrl'] = this.imageUrl;
     return data;
   }
 
   @override
   String toString() {
-    return 'CustomerBookedOnBehalf{name: $name, phoneNumber: $phoneNumber, note: $note}';
+    return 'CustomerBookedOnBehalf{name: $name, phoneNumber: $phoneNumber, note: $note, imageUrl: $imageUrl}';
   }
 }

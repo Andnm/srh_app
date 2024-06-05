@@ -23,9 +23,6 @@ class CancelReasonPage extends StatefulWidget {
 
 class _CancelReasonPageState extends State<CancelReasonPage> {
   HomeController get homeController => Get.find<HomeController>();
-  String? selectedReason;
-  TextEditingController otherReasonController = TextEditingController();
-  List<File> capturedImages = [];
 
   List<String> predefinedReasonsForCustomer = [
     'Tài xế quá xa',
@@ -53,7 +50,7 @@ class _CancelReasonPageState extends State<CancelReasonPage> {
         await ImagePicker().pickImage(source: ImageSource.camera);
     if (pickedImage != null) {
       setState(() {
-        capturedImages.add(File(pickedImage.path));
+        homeController.capturedImages.add(File(pickedImage.path));
       });
     }
   }
@@ -88,14 +85,15 @@ class _CancelReasonPageState extends State<CancelReasonPage> {
                       return GestureDetector(
                         onTap: () {
                           setState(() {
-                            selectedReason = reason;
+                            homeController..selectedReason = reason;
                           });
                         },
                         child: Card(
-                          color: selectedReason == reason
+                          color: homeController.selectedReason == reason
                               ? Colors.blue[100]
                               : null,
-                          elevation: selectedReason == reason ? 8 : 2,
+                          elevation:
+                              homeController.selectedReason == reason ? 8 : 2,
                           child: ListTile(
                             title: Text(reason),
                           ),
@@ -103,7 +101,7 @@ class _CancelReasonPageState extends State<CancelReasonPage> {
                       );
                     },
                   ),
-                  if (selectedReason == 'Khác')
+                  if (homeController.selectedReason == 'Khác')
                     Padding(
                       padding: const EdgeInsets.only(top: 16),
                       child: Container(
@@ -112,7 +110,7 @@ class _CancelReasonPageState extends State<CancelReasonPage> {
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: TextField(
-                          controller: otherReasonController,
+                          controller: homeController.otherReasonController,
                           maxLength: 50,
                           maxLines: 3,
                           decoration: InputDecoration(
@@ -133,8 +131,8 @@ class _CancelReasonPageState extends State<CancelReasonPage> {
                     GridView.builder(
                       shrinkWrap: true,
                       physics: NeverScrollableScrollPhysics(),
-                      itemCount: capturedImages.length < 4
-                          ? capturedImages.length + 1
+                      itemCount: homeController.capturedImages.length < 4
+                          ? homeController.capturedImages.length + 1
                           : 4,
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
@@ -143,16 +141,16 @@ class _CancelReasonPageState extends State<CancelReasonPage> {
                       ),
                       itemBuilder: (context, index) {
                         return GestureDetector(
-                          onTap: index == capturedImages.length
+                          onTap: index == homeController.capturedImages.length
                               ? captureImage
                               : null,
                           child: Container(
                             decoration: BoxDecoration(
                               border: Border.all(color: Colors.grey),
                             ),
-                            child: index < capturedImages.length
+                            child: index < homeController.capturedImages.length
                                 ? Image.file(
-                                    capturedImages[index],
+                                    homeController.capturedImages[index],
                                     fit: BoxFit.cover,
                                   )
                                 : Icon(Icons.camera_alt),
@@ -171,50 +169,7 @@ class _CancelReasonPageState extends State<CancelReasonPage> {
                           onPressed: homeController.isResponsedBooking.value
                               ? null
                               : () async {
-                                  print("CANCEL REASON");
-                                  String cancelReason = selectedReason == 'Khác'
-                                      ? otherReasonController.text
-                                      : selectedReason ?? '';
-
-                                  if (cancelReason.isEmpty) {
-                                    Get.snackbar(
-                                      'Lỗi',
-                                      'Vui lòng chọn lý do hủy chuyến',
-                                      snackPosition: SnackPosition.TOP,
-                                      backgroundColor: Colors.red,
-                                      colorText: Colors.white,
-                                    );
-                                    return;
-                                  }
-
-                                  if (AppRoles.isDriver) {
-                                    homeController.isResponsedBooking.value =
-                                        true;
-                                    await DriverAPI.cancelBooking(
-                                      bookingId: homeController
-                                          .state.appBookingData.value?.id,
-                                      cancelReason: cancelReason,
-                                      capturedImages: capturedImages,
-                                    );
-                                    homeController.isResponsedBooking.value =
-                                        false;
-                                    homeController.resetAppStatus();
-                                  } else {
-                                    homeController.isResponsedBooking.value =
-                                        true;
-                                    await CustomerAPI.cancelBooking(
-                                      bookingId: homeController
-                                          .state.appBookingData.value?.id,
-                                      cancelReason: cancelReason,
-                                    );
-                                    homeController.isResponsedBooking.value =
-                                        false;
-                                    homeController.resetAppStatus();
-                                    // Get.offAll(() => HomeCustomerPage());
-                                    Get.back();
-                                  }
-
-                                  Get.back();
+                                  homeController.cancelBooking();
                                 },
                           style: ElevatedButton.styleFrom(
                             padding: EdgeInsets.symmetric(

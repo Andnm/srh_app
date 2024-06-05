@@ -55,6 +55,7 @@ import '../../../global.dart';
 import '../../../store/user_store.dart';
 import '../../../utils/connectivity.dart';
 import '../../../values/colors.dart';
+import '../../../values/roles.dart';
 import 'index.dart';
 
 class HomeController extends GetxController {
@@ -109,9 +110,13 @@ class HomeController extends GetxController {
     "Mặt trái xe",
     "Mặt phải xe",
   ];
+
   RxString notes = "".obs;
   String? noteEmergency;
   String? senderAddress;
+  List<File> capturedImages = [];
+  String? selectedReason;
+  TextEditingController otherReasonController = TextEditingController();
 
   final LayerLink layerLink = LayerLink();
   var timerCountDown;
@@ -177,11 +182,23 @@ class HomeController extends GetxController {
     if (!isDriver) {
       await checkIsFromTerminated();
     }
+    await getPriceConfiguration();
   }
 
   @override
   void onReady() async {
     super.onReady();
+  }
+
+  Future<void> getPriceConfiguration() async {
+    try {
+      var priceConfigurationPrice = await CustomerAPI.getPriceConfiguration();
+      if (priceConfigurationPrice != null) {
+        state.priceConfigurationPrice = priceConfigurationPrice;
+      }
+    } catch (e) {
+      print("error to get price configuration $e");
+    }
   }
 
   Future<void> checkIsFromTerminated() async {
@@ -574,94 +591,134 @@ class HomeController extends GetxController {
   // }
 
   Future<void> searchRequest() async {
+    isResponsedBooking.value = true;
     await getAvailableNearbyOnlineDrivers();
-    if (await checkAvailableDriver()) {
-      var response = await payForSearchRequest();
-      if (response is WalletModel) {
-        await findDriverToSearchRequest();
+    try {
+      EasyLoading.show(
+          indicator: const CircularProgressIndicator(),
+          maskType: EasyLoadingMaskType.clear,
+          dismissOnTap: true);
+      if (await checkAvailableDriver()) {
+        var response = await payForSearchRequest();
+        if (response is WalletModel) {
+          await findDriverToSearchRequest();
+        }
       }
+      EasyLoading.dismiss();
+    } catch (e) {
+      EasyLoading.dismiss();
+      print('Error in search request: $e');
+
+      Get.dialog(
+        CustomAlertDialog(
+          content: "Đã xảy ra lỗi khi tìm tài xế. Vui lòng thử lại.",
+          buttonText: "Đóng",
+          onPressed: () {
+            Get.back();
+          },
+        ),
+      );
+    } finally {
+      isResponsedBooking.value = false;
     }
   }
 
   Future<void> findDriverToSearchRequest() async {
-    updateBookingStatus(BOOKING_STATUS.SEARCH_DRIVER);
-    await getAvailableNearbyOnlineDrivers();
-    if (await checkAvailableDriver()) {
-      if (isBookByMySelfStatusForCustomer) {
-        state.requestSearchRequestModel = SearchRequestModel(
-            pickupLatitude:
-                mapPageController.state.pickUpLocation.value?.latitudePosition,
-            pickupLongitude:
-                mapPageController.state.pickUpLocation.value?.longitudePosition,
-            dropOffLatitude:
-                mapPageController.state.dropOffLocation.value?.latitudePosition,
-            dropOffLongitude: mapPageController
-                .state.dropOffLocation.value?.longitudePosition,
-            distance: (((mapPageController.state.tripDirectionDetailsInfo.value
-                            ?.distanceValueDigits) ??
-                        0) /
-                    1000) *
-                1.0,
-            pickupAddress:
-                mapPageController.state.pickUpLocation.value?.placeName,
-            dropOffAddress:
-                mapPageController.state.dropOffLocation.value?.placeName,
-            driverId: state.availableNearbyOnlineDriversList[0].id,
-            bookingVehicle: state.requestVehicle.value,
-            price: state.priceOfSearchRequest.value,
-            isFemaleDriver: state.isFemaleDriver.value,
-            bookingPaymentMethod:
-                walletController.state.selectedPaymentMethod.value);
+    try {
+      updateBookingStatus(BOOKING_STATUS.SEARCH_DRIVER);
+      await getAvailableNearbyOnlineDrivers();
+      if (await checkAvailableDriver()) {
+        if (isBookByMySelfStatusForCustomer) {
+          state.requestSearchRequestModel = SearchRequestModel(
+              pickupLatitude: mapPageController
+                  .state.pickUpLocation.value?.latitudePosition,
+              pickupLongitude: mapPageController
+                  .state.pickUpLocation.value?.longitudePosition,
+              dropOffLatitude: mapPageController
+                  .state.dropOffLocation.value?.latitudePosition,
+              dropOffLongitude: mapPageController
+                  .state.dropOffLocation.value?.longitudePosition,
+              distance: (((mapPageController.state.tripDirectionDetailsInfo
+                              .value?.distanceValueDigits) ??
+                          0) /
+                      1000) *
+                  1.0,
+              pickupAddress:
+                  mapPageController.state.pickUpLocation.value?.placeName,
+              dropOffAddress:
+                  mapPageController.state.dropOffLocation.value?.placeName,
+              driverId: state.availableNearbyOnlineDriversList[0].id,
+              bookingVehicle: state.requestVehicle.value,
+              price: state.priceOfSearchRequest.value,
+              isFemaleDriver: state.isFemaleDriver.value,
+              bookingPaymentMethod:
+                  walletController.state.selectedPaymentMethod.value);
 
-        print('Myself search ${state.requestSearchRequestModel.toString()}');
-      } else {
-        print('CCHECK2');
-        state.requestSearchRequestModel = SearchRequestModel(
-            pickupLatitude:
-                mapPageController.state.pickUpLocation.value?.latitudePosition,
-            pickupLongitude:
-                mapPageController.state.pickUpLocation.value?.longitudePosition,
-            dropOffLatitude:
-                mapPageController.state.dropOffLocation.value?.latitudePosition,
-            dropOffLongitude: mapPageController
-                .state.dropOffLocation.value?.longitudePosition,
-            pickupAddress:
-                mapPageController.state.pickUpLocation.value?.placeName,
-            dropOffAddress:
-                mapPageController.state.dropOffLocation.value?.placeName,
-            driverId: state.availableNearbyOnlineDriversList[0].id,
-            bookingVehicle: state.requestVehicle.value,
-            customerBookedOnBehalf: state.requestCustomerBookedOnBehalf,
-            bookingType: BookingTypes.getBookForSomeOneStatus,
-            distance: (((mapPageController.state.tripDirectionDetailsInfo.value
-                            ?.distanceValueDigits) ??
-                        0) /
-                    1000) *
-                1.0,
-            price: state.priceOfSearchRequest.value,
-            isFemaleDriver: state.isFemaleDriver.value,
-            bookingPaymentMethod:
-                walletController.state.selectedPaymentMethod.value);
-        // removeDriverFromList(state.availableNearbyOnlineDriversList[0].id);
-        print('Onbehalf search: ${state.requestSearchRequestModel.toString()}');
+          print('Myself search ${state.requestSearchRequestModel.toString()}');
+        } else {
+          print('CCHECK2');
+          state.requestSearchRequestModel = SearchRequestModel(
+              pickupLatitude: mapPageController
+                  .state.pickUpLocation.value?.latitudePosition,
+              pickupLongitude: mapPageController
+                  .state.pickUpLocation.value?.longitudePosition,
+              dropOffLatitude: mapPageController
+                  .state.dropOffLocation.value?.latitudePosition,
+              dropOffLongitude: mapPageController
+                  .state.dropOffLocation.value?.longitudePosition,
+              pickupAddress:
+                  mapPageController.state.pickUpLocation.value?.placeName,
+              dropOffAddress:
+                  mapPageController.state.dropOffLocation.value?.placeName,
+              driverId: state.availableNearbyOnlineDriversList[0].id,
+              bookingVehicle: state.requestVehicle.value,
+              customerBookedOnBehalf: state.requestCustomerBookedOnBehalf,
+              bookingType: BookingTypes.getBookForSomeOneStatus,
+              distance: (((mapPageController.state.tripDirectionDetailsInfo
+                              .value?.distanceValueDigits) ??
+                          0) /
+                      1000) *
+                  1.0,
+              price: state.priceOfSearchRequest.value,
+              isFemaleDriver: state.isFemaleDriver.value,
+              bookingPaymentMethod:
+                  walletController.state.selectedPaymentMethod.value);
+          print(
+              'Onbehalf search: ${state.requestSearchRequestModel.toString()}');
+        }
+
+        String? searchRequestId = await SearchRequestAPI.searchRequest(
+            params: state.requestSearchRequestModel);
+
+        if (searchRequestId != null) {
+          state.requestSearchRequestModel.id = searchRequestId;
+          // nhận search id từ notification
+          state.appBookingData.value =
+              NotificationBookingModel(searchRequestId: searchRequestId);
+          removeDriverFromList(state.availableNearbyOnlineDriversList[0].id!);
+          print('FINAL OBJECT: ${state.requestSearchRequestModel.toString()}');
+          SignalRService.listenEvent("searchRequestDriverMiss",
+              (arguments) async {
+            print("Miss search request");
+
+            await handleSearchRequestDriverMiss(arguments);
+          });
+        }
       }
-      String? searchRequestId = await SearchRequestAPI.searchRequest(
-          params: state.requestSearchRequestModel);
-
-      if (searchRequestId != null) {
-        state.requestSearchRequestModel.id = searchRequestId;
-        // nhận search id từ notification
-        state.appBookingData.value =
-            NotificationBookingModel(searchRequestId: searchRequestId);
-        removeDriverFromList(state.availableNearbyOnlineDriversList[0].id!);
-        print('FINAL OBJECT: ${state.requestSearchRequestModel.toString()}');
-        SignalRService.listenEvent("searchRequestDriverMiss",
-            (arguments) async {
-          print("Miss search request");
-
-          await handleSearchRequestDriverMiss(arguments);
-        });
-      }
+    } catch (e) {
+      print('Error in findDriverToSearchRequest: $e');
+      // Xử lý lỗi tại đây, ví dụ: hiển thị thông báo lỗi cho người dùng
+      Get.dialog(
+        CustomAlertDialog(
+          content: "Đã xảy ra lỗi khi tìm tài xế. Vui lòng thử lại.",
+          buttonText: "Đóng",
+          onPressed: () {
+            Get.back();
+          },
+        ),
+      );
+    } finally {
+      isResponsedBooking.value = false;
     }
   }
 
@@ -754,10 +811,10 @@ class HomeController extends GetxController {
   }
 
   Future<void> calculateFareAmount(DirectionDetails? directionDetails) async {
-    var priceConfigurationPrice = await CustomerAPI.getPriceConfiguration();
-    print("priceConfigurationPrice: ${priceConfigurationPrice.toString()}");
+    print(
+        "priceConfigurationPrice: ${state.priceConfigurationPrice.toString()}");
 
-    if (priceConfigurationPrice == null || directionDetails == null) {
+    if (directionDetails == null) {
       return; // Trả về nếu thiếu dữ liệu đầu vào
     }
 
@@ -765,14 +822,16 @@ class HomeController extends GetxController {
 
     // Tính tổng giá dịch vụ
     double servicePrice =
-        priceConfigurationPrice.baseFareFirst3km!.price!.toDouble();
+        state.priceConfigurationPrice.baseFareFirst3km!.price!.toDouble();
     if (distanceInKm > 3) {
       int additionalKm = (distanceInKm - 3).floor();
       double remainingDistance = distanceInKm - 3 - additionalKm;
       servicePrice +=
-          priceConfigurationPrice.fareFerAdditionalKm!.price! * additionalKm;
-      servicePrice += priceConfigurationPrice.fareFerAdditionalKm!.price! *
-          remainingDistance;
+          state.priceConfigurationPrice.fareFerAdditionalKm!.price! *
+              additionalKm;
+      servicePrice +=
+          state.priceConfigurationPrice.fareFerAdditionalKm!.price! *
+              remainingDistance;
     }
 
     // Tính tổng tiền phụ phí
@@ -784,23 +843,23 @@ class HomeController extends GetxController {
         "${currentTime.hour.toString().padLeft(2, '0')}:${currentTime.minute.toString().padLeft(2, '0')}";
 
     // Kiểm tra phụ phí giờ cao điểm
-    if (priceConfigurationPrice.peakHours != null &&
+    if (state.priceConfigurationPrice.peakHours != null &&
         isWithinTimeRange(
-            currentHour, priceConfigurationPrice.peakHours!.time!)) {
+            currentHour, state.priceConfigurationPrice.peakHours!.time!)) {
       surchargeAmount += servicePrice *
-          (priceConfigurationPrice.peakHours!.isPercent!
-              ? priceConfigurationPrice.peakHours!.price! / 100
-              : priceConfigurationPrice.peakHours!.price!);
+          (state.priceConfigurationPrice.peakHours!.isPercent!
+              ? state.priceConfigurationPrice.peakHours!.price! / 100
+              : state.priceConfigurationPrice.peakHours!.price!);
     }
 
     // Kiểm tra phụ phí giờ đêm
-    if (priceConfigurationPrice.nightSurcharge != null &&
+    if (state.priceConfigurationPrice.nightSurcharge != null &&
         isWithinTimeRange(
-            currentHour, priceConfigurationPrice.nightSurcharge!.time!)) {
+            currentHour, state.priceConfigurationPrice.nightSurcharge!.time!)) {
       surchargeAmount += servicePrice *
-          (priceConfigurationPrice.nightSurcharge!.isPercent!
-              ? priceConfigurationPrice.nightSurcharge!.price! / 100
-              : priceConfigurationPrice.nightSurcharge!.price!);
+          (state.priceConfigurationPrice.nightSurcharge!.isPercent!
+              ? state.priceConfigurationPrice.nightSurcharge!.price! / 100
+              : state.priceConfigurationPrice.nightSurcharge!.price!);
     }
 
     // Tính tổng phí dịch vụ và phụ phí
@@ -839,17 +898,21 @@ class HomeController extends GetxController {
     //       mapPageController.state.currentLocation.value.longitude,
     //   radius: 3.0,
     // );
+    try {
+      OnlineNearByDriver onlineDriverRequest = OnlineNearByDriver(
+          latitude: mapPageController.state.currentLocation.value.latitude,
+          longitude: mapPageController.state.currentLocation.value.longitude,
+          isFemaleDriver: state.isFemaleDriver.value,
+          radius: 3.0);
+      var onlineDrivers =
+          await CustomerAPI.getOnlineNearByDrivers(params: onlineDriverRequest);
+      state.availableNearbyOnlineDriversList.value = onlineDrivers;
 
-    OnlineNearByDriver onlineDriverRequest = OnlineNearByDriver(
-        latitude: mapPageController.state.currentLocation.value.latitude,
-        longitude: mapPageController.state.currentLocation.value.longitude,
-        isFemaleDriver: state.isFemaleDriver.value,
-        radius: 3.0);
-    var onlineDrivers =
-        await CustomerAPI.getOnlineNearByDrivers(params: onlineDriverRequest);
-    state.availableNearbyOnlineDriversList.value = onlineDrivers;
-    print(
-        'Get OnlineDrivers : ${state.availableNearbyOnlineDriversList.value.toString()}');
+      print(
+          'Get OnlineDrivers : ${state.availableNearbyOnlineDriversList.value.toString()}');
+    } catch (e) {
+      print("Error to get online drivers: ${e.toString()}");
+    }
   }
 
   Future<void> getAvailableNearbyOnlineDriversTerminatedApp(
@@ -861,16 +924,28 @@ class HomeController extends GetxController {
     //   radius: 3.0,
     // );
 
-    OnlineNearByDriver onlineDriverRequest = OnlineNearByDriver(
-        latitude: mapPageController.state.currentLocation.value.latitude,
-        longitude: mapPageController.state.currentLocation.value.longitude,
-        isFemaleDriver: isFemaleDriver,
-        radius: 3.0);
-    var onlineDrivers =
-        await CustomerAPI.getOnlineNearByDrivers(params: onlineDriverRequest);
-    state.availableNearbyOnlineDriversList.value = onlineDrivers;
-    print(
-        'Get OnlineDrivers : ${state.availableNearbyOnlineDriversList.value.toString()}');
+    try {
+      EasyLoading.show(
+          indicator: const CircularProgressIndicator(),
+          maskType: EasyLoadingMaskType.clear,
+          dismissOnTap: true);
+
+      OnlineNearByDriver onlineDriverRequest = OnlineNearByDriver(
+          latitude: mapPageController.state.currentLocation.value.latitude,
+          longitude: mapPageController.state.currentLocation.value.longitude,
+          isFemaleDriver: isFemaleDriver,
+          radius: 3.0);
+      var onlineDrivers =
+          await CustomerAPI.getOnlineNearByDrivers(params: onlineDriverRequest);
+      state.availableNearbyOnlineDriversList.value = onlineDrivers;
+      print(
+          'Get OnlineDrivers : ${state.availableNearbyOnlineDriversList.value.toString()}');
+      EasyLoading.dismiss();
+    } catch (e) {
+      print("error to getAvailableNearbyOnlineDriversTerminatedApp $e ");
+    } finally {
+      EasyLoading.dismiss();
+    }
   }
 
   updateAvailableNearbyOnlineDriversOnMap() {
@@ -1070,95 +1145,182 @@ class HomeController extends GetxController {
   //Driver
   Future<void> responseBooking(
       {BookingRequestModel? bookingRequestModel}) async {
-    checkAvailabilityOfBookingRequest();
-    BookingRequestModel notificationBookingModel;
-    if (bookingRequestModel != null) {
-      notificationBookingModel = bookingRequestModel;
-    } else {
-      notificationBookingModel = BookingRequestModel(
-          id: state.appBookingData.value?.id,
-          driverId: state.appBookingData.value?.driverId);
-    }
-    double? distanceFromCurrentLocationToDropOffLocation;
+    try {
+      checkAvailabilityOfBookingRequest();
+      BookingRequestModel notificationBookingModel;
+      if (bookingRequestModel != null) {
+        notificationBookingModel = bookingRequestModel;
+      } else {
+        notificationBookingModel = BookingRequestModel(
+            id: state.appBookingData.value?.id,
+            driverId: state.appBookingData.value?.driverId);
+      }
+      double? distanceFromCurrentLocationToDropOffLocation;
 
-    switch (state.statusOfBooking.value) {
-      case BOOKING_STATUS.ACCEPT:
-        distanceFromCurrentLocationToDropOffLocation =
-            await mapPageController.calculateDistanceByGoogleMapAPI(
-          mapPageController.state.currentLocation.value.latitude ?? 0.0,
-          mapPageController.state.currentLocation.value.longitude ?? 0.0,
-          mapPageController.state.pickUpLocation.value?.latitudePosition ?? 0.0,
-          mapPageController.state.pickUpLocation.value?.longitudePosition ??
-              0.0,
-        );
-
-        if (distanceFromCurrentLocationToDropOffLocation != null &&
-            distanceFromCurrentLocationToDropOffLocation > 1) {
-          Get.dialog(
-            CustomAlertDialog(
-              content: "Khoảng cách bạn quá xa so với địa điểm đón khách.",
-              buttonText: "Đóng",
-              onPressed: () {
-                Get.back();
-              },
-            ),
+      switch (state.statusOfBooking.value) {
+        case BOOKING_STATUS.ACCEPT:
+          distanceFromCurrentLocationToDropOffLocation =
+              await mapPageController.calculateDistanceByGoogleMapAPI(
+            mapPageController.state.currentLocation.value.latitude ?? 0.0,
+            mapPageController.state.currentLocation.value.longitude ?? 0.0,
+            mapPageController.state.pickUpLocation.value?.latitudePosition ??
+                0.0,
+            mapPageController.state.pickUpLocation.value?.longitudePosition ??
+                0.0,
           );
-          return; // Exit the function updateBookingStatus
-        }
-        break;
 
-      case BOOKING_STATUS.ONGOING:
-        distanceFromCurrentLocationToDropOffLocation =
-            await mapPageController.calculateDistanceByGoogleMapAPI(
-          mapPageController.state.currentLocation.value.latitude ?? 0.0,
-          mapPageController.state.currentLocation.value.longitude ?? 0.0,
-          mapPageController.state.dropOffLocation.value?.latitudePosition ??
-              0.0,
-          mapPageController.state.dropOffLocation.value?.longitudePosition ??
-              0.0,
-        );
+          if (distanceFromCurrentLocationToDropOffLocation != null &&
+              distanceFromCurrentLocationToDropOffLocation > 1) {
+            Get.dialog(
+              CustomAlertDialog(
+                content: "Khoảng cách bạn quá xa so với địa điểm đón khách.",
+                buttonText: "Đóng",
+                onPressed: () {
+                  Get.back();
+                },
+              ),
+            );
+            return; // Exit the function updateBookingStatus
+          }
+          break;
 
-        if (distanceFromCurrentLocationToDropOffLocation! > 1) {
-          Get.dialog(
-            CustomAlertDialog(
-              content: "Khoảng cách bạn quá xa so với địa điểm trả khách.",
-              buttonText: "Đóng",
-              onPressed: () {
-                Get.back();
-              },
-            ),
+        case BOOKING_STATUS.ONGOING:
+          distanceFromCurrentLocationToDropOffLocation =
+              await mapPageController.calculateDistanceByGoogleMapAPI(
+            mapPageController.state.currentLocation.value.latitude ?? 0.0,
+            mapPageController.state.currentLocation.value.longitude ?? 0.0,
+            mapPageController.state.dropOffLocation.value?.latitudePosition ??
+                0.0,
+            mapPageController.state.dropOffLocation.value?.longitudePosition ??
+                0.0,
           );
-          return; // Exit the function updateBookingStatus
-        }
-        break;
 
-      default:
-        break;
+          if (distanceFromCurrentLocationToDropOffLocation! > 1) {
+            Get.dialog(
+              CustomAlertDialog(
+                content: "Khoảng cách bạn quá xa so với địa điểm trả khách.",
+                buttonText: "Đóng",
+                onPressed: () {
+                  Get.back();
+                },
+              ),
+            );
+            return; // Exit the function updateBookingStatus
+          }
+          break;
+
+        default:
+          break;
+      }
+
+      EasyLoading.show(
+          indicator: const CircularProgressIndicator(),
+          maskType: EasyLoadingMaskType.clear,
+          dismissOnTap: true);
+
+      var response = await DriverAPI.responseBooking(
+          bookingStatus: state.statusOfBooking.value,
+          params: notificationBookingModel);
+      EasyLoading.dismiss();
+
+      state.appBookingData.value =
+          state.appBookingData.value?.copyWith(bookingId: response.id);
+      if (response.status != null && response.status!.isNotEmpty) {
+        updateBookingStatus(response.status!.type);
+      }
+
+      await sendDriverLocationToBackend();
+      await retrieveDirectionDetails();
+
+      print(' response: $response');
+    } catch (e) {
+      print('Error in responseBooking: $e');
+      // Xử lý lỗi tại đây, ví dụ: hiển thị thông báo lỗi cho người dùng
+      Get.dialog(
+        CustomAlertDialog(
+          content: "Đã xảy ra lỗi khi xử lý yêu cầu. Vui lòng thử lại.",
+          buttonText: "Đóng",
+          onPressed: () {
+            Get.back();
+          },
+        ),
+      );
+    } finally {
+      EasyLoading.dismiss();
+      isResponsedBooking.value = false;
     }
-    EasyLoading.show(
-        indicator: const CircularProgressIndicator(),
-        maskType: EasyLoadingMaskType.clear,
-        dismissOnTap: true);
+  }
 
-    var response = await DriverAPI.responseBooking(
-        bookingStatus: state.statusOfBooking.value,
-        params: notificationBookingModel);
-    EasyLoading.dismiss();
+  Future<void> cancelBooking() async {
+    try {
+      String cancelReason = selectedReason == 'Khác'
+          ? otherReasonController.text
+          : selectedReason ?? '';
 
-    state.appBookingData.value =
-        state.appBookingData.value?.copyWith(bookingId: response.id);
-    if (response.status != null && response.status!.isNotEmpty) {
-      updateBookingStatus(response.status!.type);
+      if (cancelReason.isEmpty) {
+        Get.snackbar(
+          'Lỗi',
+          'Vui lòng chọn lý do hủy chuyến',
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: AppColors.errorRed,
+          colorText: AppColors.whiteColor,
+        );
+        return;
+      }
+      EasyLoading.show(
+          indicator: const CircularProgressIndicator(),
+          maskType: EasyLoadingMaskType.clear,
+          dismissOnTap: true);
+
+      if (AppRoles.isDriver) {
+        isResponsedBooking.value = true;
+        await DriverAPI.cancelBooking(
+          bookingId: state.appBookingData.value?.id,
+          cancelReason: cancelReason,
+          capturedImages: capturedImages,
+        );
+        isResponsedBooking.value = false;
+        resetAppStatus();
+      } else {
+        isResponsedBooking.value = true;
+        await CustomerAPI.cancelBooking(
+          bookingId: state.appBookingData.value?.id,
+          cancelReason: cancelReason,
+        );
+        isResponsedBooking.value = false;
+        resetAppStatus();
+        // Get.offAll(() => HomeCustomerPage());
+        EasyLoading.dismiss();
+        Get.back();
+      }
+
+      Get.back();
+    } catch (e) {
+      print('Error in cancelBooking: $e');
+      // Xử lý lỗi tại đây, ví dụ: hiển thị thông báo lỗi cho người dùng
+      Get.dialog(
+        CustomAlertDialog(
+          content: "Đã xảy ra lỗi khi hủy chuyến. Vui lòng thử lại.",
+          buttonText: "Đóng",
+          onPressed: () {
+            Get.back();
+          },
+        ),
+      );
+    } finally {
+      selectedReason = "";
+      isResponsedBooking.value = false;
+      EasyLoading.dismiss();
     }
-
-    await sendDriverLocationToBackend();
-    await retrieveDirectionDetails();
-
-    print(' response: $response');
   }
 
   Future<void> checkInAndOut() async {
     try {
+      EasyLoading.show(
+          indicator: const CircularProgressIndicator(),
+          maskType: EasyLoadingMaskType.clear,
+          dismissOnTap: true);
+
       BookingImage bookingImageRequest = BookingImage(
         bookingId: state.appBookingData.value?.id,
         bookingImageFile: state.imageFiles.last,
@@ -1168,8 +1330,12 @@ class HomeController extends GetxController {
         params: bookingImageRequest,
         isCheckIn: isCheckInApi.value,
       );
+      EasyLoading.dismiss();
     } catch (e) {
       print("Error to check in and out: " + e.toString());
+    } finally {
+      isResponsedBooking.value = false;
+      EasyLoading.dismiss();
     }
   }
 
@@ -1192,6 +1358,8 @@ class HomeController extends GetxController {
       }
     } catch (e) {
       print("Error Add Check In Note${e}");
+    } finally {
+      isResponsedBooking.value = false;
     }
   }
 
@@ -1545,12 +1713,19 @@ class HomeController extends GetxController {
   }
 
   Future pickImageFromCamera(String bookingImageType) async {
-    final xFile = await cameraController!.takePicture();
-    File pickedFile = File(xFile.path);
-    state.imageFiles.add(pickedFile);
+    try {
+      final xFile = await cameraController!.takePicture();
 
-    isCaptured.value = true;
-    print("Image Index after pick ${imageIndex.value.toString()}");
+      File pickedFile = File(xFile.path);
+      state.imageFiles.add(pickedFile);
+
+      isCaptured.value = true;
+      print("Image Index after pick ${imageIndex.value.toString()}");
+    } catch (e) {
+      print("Error to pickImageFromCamera ${e}");
+    } finally {
+      isResponsedBooking.value = false;
+    }
   }
 
   Future<void> showPhoneBottomSheet(String phoneNumber) async {

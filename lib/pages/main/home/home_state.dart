@@ -12,6 +12,7 @@ import 'package:get/get.dart';
 
 import '../../../app/payment_method_type.dart';
 import '../../../common/entities/customer.dart';
+import '../../../common/entities/price_configuration.dart';
 import '../../../common/entities/search_request_model.dart';
 import '../../../store/user_store.dart';
 
@@ -28,8 +29,8 @@ class HomeState {
 
   //Driver
   Rx<DRIVER_STATUS> stateOfDriver = DRIVER_STATUS.ONLINE.obs;
-  Rx<Color> colorToShow = Colors.pink.obs;
-  Rx<String> titleToShow = "OFFLINE".obs;
+
+  PriceConfiguration priceConfigurationPrice = PriceConfiguration();
   Rx<bool> isAvailableDriver = false.obs;
   Rx<VehicleItem> requestVehicle = VehicleItem().obs;
   Rx<Uint8List?> bookedOnBehalfVehicleImage = Rx<Uint8List?>(null);

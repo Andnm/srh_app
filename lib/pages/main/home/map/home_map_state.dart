@@ -1,4 +1,5 @@
 import 'package:cus_dbs_app/common/entities/notification/notification_booking_request.dart';
+import 'package:cus_dbs_app/common/entities/price_configuration.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';

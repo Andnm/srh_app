@@ -70,7 +70,58 @@ class BookedPersonInformationPage extends GetView<BookedPersonController> {
                   Text('Thông tin khách hàng',
                       style: TextStyle(
                           fontSize: 20.sp, fontWeight: FontWeight.bold)),
-                  SizedBox(height: 16.h),
+                  SizedBox(height: 30.h),
+                  Center(
+                    child: GestureDetector(
+                      onTap: () {
+                        showImagePickerOption(context, 'CustomerOnBehalfImage');
+                      },
+                      child: Stack(
+                        children: [
+                          controller.addCustomerOnBehalfImage.value != null
+                              ? Container(
+                                  width: 250.w,
+                                  height: 150.h,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    image: DecorationImage(
+                                      image: MemoryImage(controller
+                                          .addCustomerOnBehalfImage.value!),
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                )
+                              : Container(
+                                  width: 250.w,
+                                  height: 150.h,
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey[200],
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.add,
+                                        color: Colors.grey[600],
+                                        size: 40,
+                                      ),
+                                      SizedBox(height: 5),
+                                      Text(
+                                        'Tải ảnh lên',
+                                        style: TextStyle(
+                                          color: Colors.grey[600],
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 20.h),
                   TextField(
                     controller: controller.nameController,
                     decoration: InputDecoration(
@@ -147,7 +198,8 @@ class BookedPersonInformationPage extends GetView<BookedPersonController> {
                       controller.updateAllFieldsValid();
                     },
                   ),
-                  SizedBox(height: 20.h),
+
+                  SizedBox(height: 30.h),
                   Center(
                       child: Center(
                     child: Text(
@@ -158,7 +210,7 @@ class BookedPersonInformationPage extends GetView<BookedPersonController> {
                       ),
                     ),
                   )),
-                  SizedBox(height: 30.h),
+                  SizedBox(height: 20),
                   Center(
                     child: GestureDetector(
                       onTap: () {
@@ -209,8 +261,7 @@ class BookedPersonInformationPage extends GetView<BookedPersonController> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 10),
-                  SizedBox(height: 20),
+
                   // Biển số xe
                   SizedBox(height: 20),
                   CustomTextField(

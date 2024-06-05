@@ -50,13 +50,15 @@ class CustomerWidget extends StatelessWidget {
         });
       }
       if (controller.isCancel) {
-        if (Get.isBottomSheetOpen ?? false) {
-          Get.back(); // Đóng CancelReasonPage nếu đang mở
-        }
-        controller.resetAppStatus();
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (Get.isBottomSheetOpen ?? false) {
+            Get.back(); // Đóng CancelReasonPage nếu đang mở
+          }
+          controller.resetAppStatus();
 
-        controller.state.appBookingData.value = NotificationBookingModel();
-        Get.back();
+          controller.state.appBookingData.value = NotificationBookingModel();
+          Get.back();
+        });
       }
       if (controller.isComplete) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -734,9 +736,11 @@ class CustomerWidget extends StatelessWidget {
                   children: [
                     Expanded(
                       child: ElevatedButton(
-                        onPressed: () async {
-                          await controller.searchRequest();
-                        },
+                        onPressed: controller.isResponsedBooking.value
+                            ? null
+                            : () async {
+                                await controller.searchRequest();
+                              },
                         style: ElevatedButton.styleFrom(
                           padding: EdgeInsets.symmetric(
                               vertical: 15.h, horizontal: 20.h),
