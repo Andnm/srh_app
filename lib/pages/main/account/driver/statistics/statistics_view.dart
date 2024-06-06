@@ -42,11 +42,8 @@ class StatisticsPage extends GetView<StatisticsController> {
                   ],
                 ),
 
-                SizedBox(height: 20.h),
-
                 _buildDriverStatisticsByYear(),
 
-                SizedBox(height: 20.h),
                 Row(
                   children: [
                     SizedBox(width: 10.w),
@@ -55,60 +52,26 @@ class StatisticsPage extends GetView<StatisticsController> {
                     ),
                   ],
                 ),
-                _buildTotalMoneyWidget(),
-                SizedBox(height: 20.h),
-                _buildTotalTripAndCompletedTrip(),
+                _buildTotalMonthlyWidget(),
                 SizedBox(height: 16.h),
-                Expanded(
-                  child: GetBuilder<StatisticsController>(
-                    builder: (controller) {
-                      final month = controller.selectedMonth.value;
-                      final daysInMonth = controller.daysInMonth(month);
-                      return (controller.getDriverStatisticDayly ?? [])
-                              .isNotEmpty
-                          ? ListView.separated(
-                              itemCount:
-                                  controller.getDriverStatisticDayly?.length ??
-                                      0,
-                              separatorBuilder: (context, index) => Divider(),
-                              itemBuilder: (context, index) {
-                                final day = controller
-                                        .getDriverStatisticDayly?[index]?.day ??
-                                    DateTime.now().day;
-                                final year = controller.selectedYear.value;
-                                final date = DateTime(year, month, day);
-                                final dayOfWeek =
-                                    controller.dayOfWeekNames[date.weekday - 1];
-                                final formattedDate =
-                                    '${dayOfWeek}, ${controller.formatDate(date)}';
-
-                                // Thay thế dữ liệu tĩnh bằng dữ liệu thực tế từ controller hoặc model
-                                final details =
-                                    '${controller.getDriverStatisticDayly?[index]?.totalTrip} | ${controller.getDriverStatisticDayly?[index]?.totalOperatiingTime}';
-                                final amount = controller
-                                        .getDriverStatisticDayly?[index]
-                                        ?.totalIncome ??
-                                    0;
-
-                                return _buildDayItem(
-                                    formattedDate, details, amount);
-                              },
-                            )
-                          : Center(
-                              child: Container(
-                                child: Text(
-                                  "Thất nghiệp",
-                                  style: TextStyle(
-                                      fontSize: 20.sp,
-                                      fontWeight: FontWeight.bold,
-                                      color: AppColors.primaryText
-                                          .withOpacity(0.5)),
-                                ),
-                              ),
-                            );
-                    },
-                  ),
-                ),
+                (controller.getDriverStatisticDayly ?? []).isEmpty
+                    ? Expanded(
+                        child: Container(
+                          decoration: BoxDecoration(
+                              color: AppColors.primaryText.withOpacity(0.05)),
+                          child: Center(
+                            child: Text(
+                              "Không có chuyến",
+                              style: TextStyle(
+                                  fontSize: 20.sp,
+                                  fontWeight: FontWeight.bold,
+                                  color:
+                                      AppColors.primaryText.withOpacity(0.5)),
+                            ),
+                          ),
+                        ),
+                      )
+                    : Expanded(child: _buildDriverStatisticsDailyList())
               ],
             ),
           );
@@ -116,6 +79,40 @@ class StatisticsPage extends GetView<StatisticsController> {
       ),
     );
   }
+
+  Widget _buildDriverStatisticsDailyList() => GetBuilder<StatisticsController>(
+        builder: (controller) {
+          final month = controller.selectedMonth.value;
+          final daysInMonth = controller.daysInMonth(month);
+          return ListView.separated(
+            itemCount: controller.getDriverStatisticDayly?.length ?? 0,
+            separatorBuilder: (context, index) => Divider(),
+            itemBuilder: (context, index) {
+              final day = controller.getDriverStatisticDayly?[index]?.day ??
+                  DateTime.now().day;
+              final year = controller.selectedYear.value;
+              final date = DateTime(year, month, day);
+              final dayOfWeek = controller.dayOfWeekNames[date.weekday - 1];
+              final formattedDate =
+                  '${dayOfWeek}, ${controller.formatDate(date)}';
+
+              // Thay thế dữ liệu tĩnh bằng dữ liệu thực tế từ controller hoặc model
+              final details =
+                  '${controller.getDriverStatisticDayly?[index]?.totalTrip} | ${controller.getDriverStatisticDayly?[index]?.totalOperatiingTime}';
+              final amount =
+                  controller.getDriverStatisticDayly?[index]?.totalIncome ?? 0;
+
+              return _buildDayItem(formattedDate, details, amount);
+            },
+          );
+        },
+      );
+  Widget _buildTotalMonthlyWidget() => Column(
+        children: [
+          _buildTotalMoneyWidget(),
+          _buildTotalTripAndCompletedTrip(),
+        ],
+      );
 
   Widget _buildTotalTripAndCompletedTrip() => Row(
         children: [
@@ -135,15 +132,14 @@ class StatisticsPage extends GetView<StatisticsController> {
                       style: TextStyle(
                         color: AppColors.surfaceWhite,
                         fontWeight: FontWeight.bold,
-                        fontSize: 16.sp,
+                        fontSize: 12.sp,
                       ),
                     ),
-                    SizedBox(height: 5.h),
                     Text(
                       "${controller.state.monthlyDriverStatistics.value.totalTrips}",
                       style: TextStyle(
                           color: AppColors.surfaceWhite,
-                          fontSize: 20.sp,
+                          fontSize: 14.sp,
                           fontWeight: FontWeight.bold),
                     ),
                   ],
@@ -167,15 +163,14 @@ class StatisticsPage extends GetView<StatisticsController> {
                       style: TextStyle(
                         color: AppColors.surfaceWhite,
                         fontWeight: FontWeight.bold,
-                        fontSize: 16.sp,
+                        fontSize: 12.sp,
                       ),
                     ),
-                    SizedBox(height: 5.h),
                     Text(
                       "${controller.state.monthlyDriverStatistics.value.totalTripsCompleted} ",
                       style: TextStyle(
                           color: AppColors.surfaceWhite,
-                          fontSize: 20.sp,
+                          fontSize: 14.sp,
                           fontWeight: FontWeight.bold),
                     ),
                   ],
@@ -194,7 +189,7 @@ class StatisticsPage extends GetView<StatisticsController> {
                 '0') ??
             0,
         color: AppColors.acceptColor.withOpacity(0.8),
-        radius: 80.r,
+        radius: 60.r,
         title: controller
                 .state.yearlyDriverStatistics.value.bookingAcceptanceRate ??
             "",
@@ -217,7 +212,7 @@ class StatisticsPage extends GetView<StatisticsController> {
                 '0') ??
             0,
         color: AppColors.errorRed.withOpacity(0.8),
-        radius: 80.r,
+        radius: 60.r,
         title: controller
                 .state.yearlyDriverStatistics.value.bookingCancellationRate ??
             "",
@@ -240,7 +235,7 @@ class StatisticsPage extends GetView<StatisticsController> {
                 '0') ??
             0,
         color: AppColors.primaryElement.withOpacity(0.8),
-        radius: 80.r,
+        radius: 60.r,
         title: controller
                 .state.yearlyDriverStatistics.value.bookingCompletionRate ??
             "",
@@ -275,64 +270,68 @@ class StatisticsPage extends GetView<StatisticsController> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          Container(
-            width: 150.w,
-            height: 200.h,
-            child: AspectRatio(
-              aspectRatio: 1,
-              child: PieChart(
-                PieChartData(
-                  sections: sections,
-                  centerSpaceRadius: 10.r,
-                  sectionsSpace: 0,
+          Expanded(
+            child: Container(
+              width: 100.w,
+              height: 150.h,
+              child: AspectRatio(
+                aspectRatio: 1,
+                child: PieChart(
+                  PieChartData(
+                    sections: sections,
+                    centerSpaceRadius: 2.r,
+                    sectionsSpace: 0,
+                  ),
                 ),
               ),
             ),
           ),
           SizedBox(width: 20.w),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _buildLegendItem(
-                    AppColors.acceptColor.withOpacity(0.8),
-                    "Chấp nhận",
-                  ),
-                  Text(controller.state.yearlyDriverStatistics.value
-                          .bookingAcceptanceRate ??
-                      "")
-                ],
-              ),
-              SizedBox(height: 10.h),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _buildLegendItem(
-                    AppColors.errorRed.withOpacity(0.8),
-                    "Hủy chuyến",
-                  ),
-                  Text(controller.state.yearlyDriverStatistics.value
-                          .bookingCancellationRate ??
-                      "")
-                ],
-              ),
-              SizedBox(height: 10.h),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _buildLegendItem(
-                    AppColors.primaryElement.withOpacity(0.8),
-                    "Hoàn thành",
-                  ),
-                  Text(controller.state.yearlyDriverStatistics.value
-                          .bookingCompletionRate ??
-                      "")
-                ],
-              ),
-            ],
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _buildLegendItem(
+                      AppColors.acceptColor.withOpacity(0.8),
+                      "Chấp nhận",
+                    ),
+                    Text(controller.state.yearlyDriverStatistics.value
+                            .bookingAcceptanceRate ??
+                        "")
+                  ],
+                ),
+                SizedBox(height: 5.h),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _buildLegendItem(
+                      AppColors.errorRed.withOpacity(0.8),
+                      "Hủy chuyến",
+                    ),
+                    Text(controller.state.yearlyDriverStatistics.value
+                            .bookingCancellationRate ??
+                        "")
+                  ],
+                ),
+                SizedBox(height: 5.h),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _buildLegendItem(
+                      AppColors.primaryElement.withOpacity(0.8),
+                      "Hoàn thành",
+                    ),
+                    Text(controller.state.yearlyDriverStatistics.value
+                            .bookingCompletionRate ??
+                        "")
+                  ],
+                ),
+              ],
+            ),
           ),
         ],
       ),
@@ -375,11 +374,10 @@ class StatisticsPage extends GetView<StatisticsController> {
                   fontSize: 16.sp,
                 ),
               ),
-              SizedBox(height: 5.h),
               Text(
                 details,
                 style: TextStyle(
-                  color: AppColors.primaryText.withOpacity(0.6),
+                  color: AppColors.primaryText.withOpacity(0.8),
                   fontSize: 14.sp,
                 ),
               ),
@@ -456,16 +454,15 @@ class StatisticsPage extends GetView<StatisticsController> {
                         "Thu nhập ròng",
                         style: TextStyle(
                             color: AppColors.surfaceWhite,
-                            fontSize: 16.sp,
+                            fontSize: 12.sp,
                             fontWeight: FontWeight.bold),
                       ),
-                      SizedBox(height: 5.h),
                       Text(
                         "${controller.formatCurrency.format(controller.state.monthlyDriverStatistics.value.totalMoney ?? 0)}",
                         style: TextStyle(
                           color: AppColors.surfaceWhite,
                           fontWeight: FontWeight.bold,
-                          fontSize: 20.sp,
+                          fontSize: 14.sp,
                         ),
                       ),
                     ],
@@ -488,10 +485,9 @@ class StatisticsPage extends GetView<StatisticsController> {
                         "Tổng số giờ chạy",
                         style: TextStyle(
                             color: AppColors.surfaceWhite,
-                            fontSize: 16.sp,
+                            fontSize: 12.sp,
                             fontWeight: FontWeight.bold),
                       ),
-                      SizedBox(height: 5.h),
                       Text(
                         controller.state.monthlyDriverStatistics.value
                                 .totalOperatingTime ??
@@ -499,7 +495,7 @@ class StatisticsPage extends GetView<StatisticsController> {
                         style: TextStyle(
                           color: AppColors.surfaceWhite,
                           fontWeight: FontWeight.bold,
-                          fontSize: 20.sp,
+                          fontSize: 14.sp,
                         ),
                       ),
                     ],
