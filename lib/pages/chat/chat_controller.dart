@@ -49,6 +49,7 @@ class ChatController extends GetxController {
     await getInfo();
 
     await inConversation(); // Gọi inConversation sau khi khởi tạo messageTo
+
     await SignalRMessageService.initialize();
   }
 

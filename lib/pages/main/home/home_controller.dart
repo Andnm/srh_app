@@ -1348,10 +1348,16 @@ class HomeController extends GetxController {
 
   Future<void> addNotes({required bool isCheckIn}) async {
     try {
+      EasyLoading.show(
+          indicator: const CircularProgressIndicator(),
+          maskType: EasyLoadingMaskType.clear,
+          dismissOnTap: true);
+
       if (isCheckIn) {
         var response = await DriverAPI.addCheckInNote(
             bookingId: state.appBookingData.value?.id,
             checkInNote: notes.value ?? "");
+        EasyLoading.dismiss();
         notes.value = "";
         print("${response.toString()}");
         clearTextFields();
@@ -1359,6 +1365,7 @@ class HomeController extends GetxController {
         var response = await DriverAPI.addCheckOutNote(
             bookingId: state.appBookingData.value?.id,
             checkOutNote: notes.value ?? "");
+        EasyLoading.dismiss();
         notes.value = "";
         print("${response.toString()}");
         clearTextFields();
@@ -1366,6 +1373,7 @@ class HomeController extends GetxController {
     } catch (e) {
       print("Error Add Check In Note${e}");
     } finally {
+      EasyLoading.dismiss();
       isResponsedBooking.value = false;
     }
   }
@@ -1721,8 +1729,13 @@ class HomeController extends GetxController {
 
   Future pickImageFromCamera(String bookingImageType) async {
     try {
-      final xFile = await cameraController!.takePicture();
+      EasyLoading.show(
+          indicator: const CircularProgressIndicator(),
+          maskType: EasyLoadingMaskType.clear,
+          dismissOnTap: true);
 
+      final xFile = await cameraController!.takePicture();
+      EasyLoading.dismiss();
       File pickedFile = File(xFile.path);
       state.imageFiles.add(pickedFile);
 
@@ -1731,6 +1744,7 @@ class HomeController extends GetxController {
     } catch (e) {
       print("Error to pickImageFromCamera ${e}");
     } finally {
+      EasyLoading.dismiss();
       isResponsedBooking.value = false;
     }
   }

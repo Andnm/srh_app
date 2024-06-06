@@ -42,6 +42,7 @@ class VoiceController extends GetxController {
       messageFrom = UserStore.to.customerProfile.userID;
     }
     await initEngine();
+    await engine.setEnableSpeakerphone(false);
     await getInfo();
   }
 
@@ -143,7 +144,7 @@ class VoiceController extends GetxController {
         options: ChannelMediaOptions(
             channelProfile: channelProfileType,
             clientRoleType: ClientRoleType.clientRoleBroadcaster));
-    await engine.setEnableSpeakerphone(false); // loa ngoi uu tien khong duoc
+
     EasyLoading.dismiss();
   }
 
