@@ -31,9 +31,9 @@ class MainPage extends GetView<MainController> {
               null,
               controller.state.notiCount.value != 0
                   ? MotionBadgeWidget(
-                      text: controller.state.notiCount.value
-                          .toString()
-                          .substring(0, 3),
+                      text: controller.state.notiCount.value > 99
+                          ? "99+"
+                          : controller.state.notiCount.value.toString(),
                       textColor: AppColors.whiteColor,
                       color: AppColors.errorRed,
                       size: 18.sp,
