@@ -23,11 +23,6 @@ class CreateNewVehicle extends StatelessWidget {
         appBar: AppBar(
           backgroundColor: Colors.white,
           scrolledUnderElevation: 0,
-          leading: IconButton(
-              icon: const Icon(Icons.arrow_back),
-              onPressed: () {
-                Get.back();
-              }),
           actions: [
             TextButton(
               onPressed: () {

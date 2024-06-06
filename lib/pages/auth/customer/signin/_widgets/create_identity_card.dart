@@ -21,11 +21,6 @@ class CreateNewIdentityCard extends StatelessWidget {
         appBar: AppBar(
           backgroundColor: Colors.white,
           scrolledUnderElevation: 0,
-          leading: IconButton(
-              icon: const Icon(Icons.arrow_back),
-              onPressed: () {
-                Get.back();
-              }),
           actions: [
             TextButton(
               onPressed: () async {
@@ -258,7 +253,17 @@ class CreateNewIdentityCard extends StatelessWidget {
                   controller: _customerUpdateIdentityController
                       .identityCardNumberController,
                   readOnlyStatus: false,
+                  onChanged: (value) {
+                    _customerUpdateIdentityController.state.errorIdCard.value =
+                        '';
+                  },
                 ),
+                if (_customerUpdateIdentityController
+                    .state.errorIdCard.value.isNotEmpty)
+                  Text(
+                    _customerUpdateIdentityController.state.errorIdCard.value,
+                    style: TextStyle(color: Colors.red),
+                  ),
 
                 // Full name
                 SizedBox(height: 20),

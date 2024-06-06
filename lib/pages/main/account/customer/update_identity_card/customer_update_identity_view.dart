@@ -12,6 +12,8 @@ class CustomerUpdateIdentityPage
   const CustomerUpdateIdentityPage();
   @override
   Widget build(BuildContext context) {
+    controller.fetchLoadingAllIdentityInfo();
+
     return Obx(
       () => Scaffold(
         appBar: AppBar(
@@ -40,6 +42,7 @@ class CustomerUpdateIdentityPage
           padding: EdgeInsets.symmetric(horizontal: 20),
           child: SingleChildScrollView(
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Image.asset(
@@ -209,7 +212,15 @@ class CustomerUpdateIdentityPage
                   prefixIcon: Icons.numbers,
                   controller: controller.identityCardNumberController,
                   readOnlyStatus: !controller.state.editMode.value,
+                  onChanged: (value) {
+                    controller.state.errorIdCard.value = '';
+                  },
                 ),
+                if (controller.state.errorIdCard.value.isNotEmpty)
+                  Text(
+                    controller.state.errorIdCard.value,
+                    style: TextStyle(color: Colors.red),
+                  ),
 
                 // Full name
                 SizedBox(height: 20),

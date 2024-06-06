@@ -30,8 +30,6 @@ class CustomerUpdateIdentityController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    // include identity card and identity card image
-    _fetchLoadingAllIdentityInfo();
   }
 
   void handleLoading() {
@@ -47,7 +45,7 @@ class CustomerUpdateIdentityController extends GetxController {
     return response;
   }
 
-  Future<void> _fetchLoadingAllIdentityInfo() async {
+  Future<void> fetchLoadingAllIdentityInfo() async {
     handleLoading();
     try {
       await fetchIdentityCardFromApi();
@@ -185,7 +183,7 @@ class CustomerUpdateIdentityController extends GetxController {
       state.identityCardNumber.value = identityCardNumberController.text.trim();
       state.fullName.value = fullNameController.text.trim();
       state.dob.value = dobController.text.trim();
-      state.gender.value = genderController.text.trim();
+      //
       state.nationality.value = nationalityController.text.trim();
       state.placeOrigin.value = placeOriginController.text.trim();
       state.placeResidence.value = placeResidenceController.text.trim();
@@ -196,9 +194,19 @@ class CustomerUpdateIdentityController extends GetxController {
       bool hasError = false;
       if (state.dob.value != '') {
         if (!isValidAge(state.dob.value)) {
-          state.errorDob.value = 'User must be at least 18 years old';
+          state.errorDob.value = 'Khách hàng ít nhất phải 18 tuổi';
           hasError = true;
         }
+      }
+
+      if (state.identityCardNumber.value == '') {
+        state.errorIdCard.value = 'Vui lòng nhập số CCCD!';
+        hasError = true;
+      }
+
+      if (state.identityCardNumber.value.length != 12) {
+        state.errorIdCard.value = 'CCCD không hợp lệ!';
+        hasError = true;
       }
 
       if (hasError) {
@@ -223,6 +231,11 @@ class CustomerUpdateIdentityController extends GetxController {
         if (updatedIdentity != null) {
           await _asyncUpdateIdentityCard(updatedIdentity);
         }
+      } else {
+        //chưa có identity thì tạo identity
+
+        state.id.value = await IdentityAPI.createIdentityCard(
+            identityCardInfo: updatedIdentity);
       }
 
       // kiểm tra xem là đã có identity card img chưa
@@ -292,23 +305,7 @@ class CustomerUpdateIdentityController extends GetxController {
         state.imageFrontId.value = response.id ?? '';
       }
     } catch (e) {
-      print('Error call api update identity image: $e');
-
-      Get.snackbar(
-        'Error call api update identity image:',
-        ' $e',
-        backgroundColor: Colors.white,
-        colorText: Colors.red,
-        borderWidth: 1,
-        boxShadows: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.2),
-            spreadRadius: 2,
-            blurRadius: 4,
-            offset: Offset(0, 2),
-          ),
-        ],
-      );
+      print('Error call api update identity image front: $e');
     }
   }
 
@@ -332,23 +329,7 @@ class CustomerUpdateIdentityController extends GetxController {
         state.imageBehindId.value = response.id ?? '';
       }
     } catch (e) {
-      print('Error call api update identity image: $e');
-
-      Get.snackbar(
-        'Error call api update identity image:',
-        ' $e',
-        backgroundColor: Colors.white,
-        colorText: Colors.red,
-        borderWidth: 1,
-        boxShadows: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.2),
-            spreadRadius: 2,
-            blurRadius: 4,
-            offset: Offset(0, 2),
-          ),
-        ],
-      );
+      print('Error call api update identity image behind: $e');
     }
   }
 //TẠO IDENTITY
@@ -370,22 +351,7 @@ class CustomerUpdateIdentityController extends GetxController {
             identityCardImage: formDataFront);
       }
     } catch (e) {
-      print('Error call api add identity card image: $e');
-      Get.snackbar(
-        'Error call api add identity card image:',
-        ' $e',
-        backgroundColor: Colors.white,
-        colorText: Colors.red,
-        borderWidth: 1,
-        boxShadows: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.2),
-            spreadRadius: 2,
-            blurRadius: 4,
-            offset: Offset(0, 2),
-          ),
-        ],
-      );
+      print('Error call api add identity card image front: $e');
     }
   }
 
@@ -405,22 +371,7 @@ class CustomerUpdateIdentityController extends GetxController {
             identityCardImage: formDataBehind);
       }
     } catch (e) {
-      print('Error call api add identity card image: $e');
-      Get.snackbar(
-        'Error call api add identity card image:',
-        ' $e',
-        backgroundColor: Colors.white,
-        colorText: Colors.red,
-        borderWidth: 1,
-        boxShadows: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.2),
-            spreadRadius: 2,
-            blurRadius: 4,
-            offset: Offset(0, 2),
-          ),
-        ],
-      );
+      print('Error call api add identity card image behind: $e');
     }
   }
 
@@ -484,7 +435,7 @@ class CustomerUpdateIdentityController extends GetxController {
       state.identityCardNumber.value = identityCardNumberController.text.trim();
       state.fullName.value = fullNameController.text.trim();
       state.dob.value = dobController.text.trim();
-      state.gender.value = genderController.text.trim();
+      //gender
       state.nationality.value = nationalityController.text.trim();
       state.placeOrigin.value = placeOriginController.text.trim();
       state.placeResidence.value = placeResidenceController.text.trim();
@@ -504,6 +455,28 @@ class CustomerUpdateIdentityController extends GetxController {
         expiredDate: state.expiredDate.value,
       );
 
+      bool hasError = false;
+      if (state.dob.value != '') {
+        if (!isValidAge(state.dob.value)) {
+          state.errorDob.value = 'Khách hàng ít nhất phải 18 tuổi';
+          hasError = true;
+        }
+      }
+
+      if (state.identityCardNumber.value == '') {
+        state.errorIdCard.value = 'Vui lòng nhập số CCCD!';
+        hasError = true;
+      }
+
+      if (state.identityCardNumber.value.length != 12) {
+        state.errorIdCard.value = 'CCCD không hợp lệ!';
+        hasError = true;
+      }
+
+      if (hasError) {
+        return;
+      }
+
       String identityCardId = await IdentityAPI.createIdentityCard(
           identityCardInfo: createIdentityCard);
       state.errorIdentityCard.value = false;
@@ -512,7 +485,7 @@ class CustomerUpdateIdentityController extends GetxController {
       await _callApiToAddNewIdentityCardImageBehind(identityCardId);
     } catch (e) {
       state.errorIdentityCard.value = true;
-      // Get.snackbar("Error", e.toString());
+      state.errorIdCard.value = 'CCCD đã tồn tại trong hệ thống!';
     } finally {
       EasyLoading.dismiss();
     }

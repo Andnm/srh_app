@@ -42,6 +42,6 @@ class CustomerUpdateIdentityState {
 
   // error
   Rx<String> errorDob = ''.obs;
-
+  Rx<String> errorIdCard= ''.obs;
   Rx<bool> errorIdentityCard = false.obs;
 }

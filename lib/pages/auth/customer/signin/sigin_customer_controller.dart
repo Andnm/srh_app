@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:io';
 import 'package:cus_dbs_app/common/apis/customer_api.dart';
 import 'package:cus_dbs_app/common/entities/customer.dart';
@@ -145,12 +146,14 @@ class CustomerSignInController extends GetxController {
           final UserCredential userCredential =
               await auth.signInWithProvider(googleAuthProvider);
           final User user = userCredential.user!;
+          print("user: $user");
+
           final idToken = await user.getIdToken();
           String? providerId = userCredential.additionalUserInfo!.providerId;
           externalLogin =
               CustomerExternalLogin(idToken: idToken, provider: providerId);
 
-          print('idToken google $idToken');
+          log('idToken google $idToken');
 
           await asyncPostAllDataCustomer(externalLogin);
           final phoneNumber = UserStore.to.customerProfile.phoneNumber;
