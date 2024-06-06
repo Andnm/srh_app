@@ -143,6 +143,7 @@ class VoiceController extends GetxController {
         options: ChannelMediaOptions(
             channelProfile: channelProfileType,
             clientRoleType: ClientRoleType.clientRoleBroadcaster));
+    await engine.setEnableSpeakerphone(false); // loa ngoi uu tien khong duoc
     EasyLoading.dismiss();
   }
 

@@ -172,156 +172,223 @@ class StatisticsPage extends GetView<StatisticsController> {
   }
 
   Widget _buildDriverStatisticsByYear() => Container(
-        padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 20.h),
+        padding: EdgeInsets.symmetric(horizontal: 0, vertical: 20.h),
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Expanded(
-                child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.check),
-                        Text(
-                          "${controller.state.yearlyDriverStatistics.value.bookingAcceptanceRate ?? 0}",
-                          style: TextStyle(
-                              color: AppColors.primaryText,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18.sp),
+              child: Card(
+                child: Container(
+                  padding: EdgeInsets.all(5.w),
+                  decoration: BoxDecoration(
+                    color: AppColors.acceptColor.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(10.r),
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "${controller.state.yearlyDriverStatistics.value.bookingAcceptanceRate ?? 0}",
+                        style: TextStyle(
+                          color: AppColors.acceptColor,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20.sp,
                         ),
-                      ],
-                    )
-                  ],
+                      ),
+                      SizedBox(height: 5.h),
+                      Text(
+                        "Nhận đơn",
+                        style: TextStyle(
+                          color: AppColors.acceptColor,
+                          fontSize: 16.sp,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                Text(
-                  "Nhận đơn",
-                  style:
-                      TextStyle(color: AppColors.primaryText, fontSize: 16.sp),
-                )
-              ],
-            )),
+              ),
+            ),
+            SizedBox(width: 8.w),
             Expanded(
-                child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.close),
-                    Text(
-                      "${controller.state.yearlyDriverStatistics.value.bookingCancellationRate ?? 0}",
-                      style: TextStyle(
-                          color: AppColors.primaryText,
+              child: Card(
+                child: Container(
+                  padding: EdgeInsets.all(5.w),
+                  decoration: BoxDecoration(
+                    color: Colors.red.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(10.r),
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "${controller.state.yearlyDriverStatistics.value.bookingCancellationRate ?? 0}",
+                        style: TextStyle(
+                          color: AppColors.errorRed,
                           fontWeight: FontWeight.bold,
-                          fontSize: 18.sp),
-                    ),
-                  ],
+                          fontSize: 20.sp,
+                        ),
+                      ),
+                      SizedBox(height: 5.h),
+                      Text(
+                        "Hủy đơn",
+                        style: TextStyle(
+                          color: Colors.red,
+                          fontSize: 16.sp,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                Text(
-                  "Hủy đơn",
-                  style:
-                      TextStyle(color: AppColors.primaryText, fontSize: 16.sp),
-                )
-              ],
-            )),
+              ),
+            ),
+            SizedBox(width: 8.w),
             Expanded(
-                child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.verified),
-                    Text(
-                      "${controller.state.yearlyDriverStatistics.value.bookingCompletionRate ?? 0}",
-                      style: TextStyle(
-                          color: AppColors.primaryText,
+              child: Card(
+                child: Container(
+                  padding: EdgeInsets.all(5.w),
+                  decoration: BoxDecoration(
+                    color: Colors.blue.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(10.r),
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "${controller.state.yearlyDriverStatistics.value.bookingCompletionRate ?? 0}",
+                        style: TextStyle(
+                          color: Colors.blue,
                           fontWeight: FontWeight.bold,
-                          fontSize: 18.sp),
-                    ),
-                  ],
+                          fontSize: 20.sp,
+                        ),
+                      ),
+                      SizedBox(height: 5.h),
+                      Text(
+                        "Hoàn thành",
+                        style: TextStyle(
+                          color: Colors.blue,
+                          fontSize: 16.sp,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                Text(
-                  "Hoàn thành",
-                  style:
-                      TextStyle(color: AppColors.primaryText, fontSize: 16.sp),
-                )
-              ],
-            )),
+              ),
+            ),
           ],
-        ),
-        decoration: BoxDecoration(
-          color: AppColors.primaryText.withOpacity(0.2),
         ),
       );
 
   Widget _buildDayItem(String date, String details, int amount) {
-    return ListTile(
-      title: Text(date),
-      subtitle: Text(details),
-      trailing: Text(
-        controller.formatCurrency.format(amount),
-        style: TextStyle(
-          color: AppColors.acceptColor,
-          fontSize: 18.sp,
-          fontWeight: FontWeight.bold,
-        ),
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 15.w),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                date,
+                style: TextStyle(
+                  color: AppColors.primaryText,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16.sp,
+                ),
+              ),
+              SizedBox(height: 5.h),
+              Text(
+                details,
+                style: TextStyle(
+                  color: AppColors.primaryText.withOpacity(0.6),
+                  fontSize: 14.sp,
+                ),
+              ),
+            ],
+          ),
+          Text(
+            controller.formatCurrency.format(amount),
+            style: TextStyle(
+              color: AppColors.acceptColor,
+              fontSize: 18.sp,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
       ),
     );
   }
 
   Widget _buildTotalMoneyWidget() => Container(
-        padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 20.h),
+        padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 20.h),
         child: Row(
           children: [
             Expanded(
-                child: Column(
-              children: [
-                Text(
-                  "Thu nhập ròng",
-                  style: TextStyle(
-                      color: AppColors.primaryText,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16.sp),
+              child: Card(
+                child: Container(
+                  padding: EdgeInsets.all(5.w),
+                  decoration: BoxDecoration(
+                    color: AppColors.acceptColor,
+                    borderRadius: BorderRadius.circular(10.r),
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Thu nhập ròng",
+                        style: TextStyle(
+                            color: AppColors.surfaceWhite,
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(height: 5.h),
+                      Text(
+                        "${controller.formatCurrency.format(controller.state.monthlyDriverStatistics.value.totalMoney ?? 0)}",
+                        style: TextStyle(
+                          color: AppColors.surfaceWhite,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20.sp,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                Text(
-                  controller.formatCurrency.format(controller
-                          .state.monthlyDriverStatistics.value.totalMoney ??
-                      0),
-                  style: TextStyle(
-                      color: AppColors.primaryText,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18.sp),
-                )
-              ],
-            )),
+              ),
+            ),
             Expanded(
-                child: Column(
-              children: [
-                Text(
-                  "Tổng số giờ chạy",
-                  style: TextStyle(
-                      color: AppColors.primaryText,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16.sp),
+              child: Card(
+                child: Container(
+                  padding: EdgeInsets.all(5.w),
+                  decoration: BoxDecoration(
+                    color: AppColors.primaryElement,
+                    borderRadius: BorderRadius.circular(10.r),
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Tổng số giờ chạy",
+                        style: TextStyle(
+                            color: AppColors.surfaceWhite,
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(height: 5.h),
+                      Text(
+                        controller.state.monthlyDriverStatistics.value
+                                .totalOperatingTime ??
+                            "0",
+                        style: TextStyle(
+                          color: AppColors.surfaceWhite,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20.sp,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                Text(
-                  controller.state.monthlyDriverStatistics.value
-                          .totalOperatingTime ??
-                      "0",
-                  style: TextStyle(
-                      color: AppColors.primaryText,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18.sp),
-                )
-              ],
-            )),
+              ),
+            ),
           ],
         ),
-        decoration:
-            BoxDecoration(color: AppColors.primaryText.withOpacity(0.2)),
       );
 }
