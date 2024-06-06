@@ -29,6 +29,7 @@ class StatisticsController extends GetxController {
     'Thứ Bảy',
     'Chủ Nhật'
   ];
+  RxBool showTooltip = false.obs;
 
   @override
   void onInit() async {
@@ -75,19 +76,19 @@ class StatisticsController extends GetxController {
     return DateTime(currentYear, month + 1, 0).day;
   }
 
-  void scrollToSelectedMonth() {
-    final selectedMonthIndex = selectedMonth.value - 1;
-    final itemWidth = 100.0; // Chiều rộng của mỗi item tháng
-    final screenWidth = Get.width;
-    final scrollOffset =
-        selectedMonthIndex * itemWidth - (screenWidth - itemWidth) / 2;
-
-    scrollController.animateTo(
-      scrollOffset,
-      duration: Duration(milliseconds: 500), // Thời gian animation
-      curve: Curves.easeInOut, // Đường cong animation
-    );
-  }
+  // void scrollToSelectedMonth() {
+  //   final selectedMonthIndex = selectedMonth.value - 1;
+  //   final itemWidth = 100.0; // Chiều rộng của mỗi item tháng
+  //   final screenWidth = Get.width;
+  //   final scrollOffset =
+  //       selectedMonthIndex * itemWidth - (screenWidth - itemWidth) / 2;
+  //
+  //   scrollController.animateTo(
+  //     scrollOffset,
+  //     duration: Duration(milliseconds: 500), // Thời gian animation
+  //     curve: Curves.easeInOut, // Đường cong animation
+  //   );
+  // }
 
   String formatDate(DateTime date) {
     return '${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}';
