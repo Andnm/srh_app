@@ -172,7 +172,6 @@ class HomeController extends GetxController {
   @override
   Future<void> onInit() async {
     super.onInit();
-    print("init location");
     await InternetChecker.startListening();
     await SignalRService.initialize();
     await initLocation();

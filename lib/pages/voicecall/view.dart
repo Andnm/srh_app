@@ -48,8 +48,12 @@ class VoicePage extends GetView<VoiceController> {
                           child: CircleAvatar(
                             radius: 30.0.r,
                             backgroundColor: Colors.transparent,
-                            backgroundImage: NetworkImage(
-                                '${SERVER_API_URL}${controller.state.to_avatar.value}'),
+                            backgroundImage: controller
+                                    .state.to_avatar.value.isNotEmpty
+                                ? NetworkImage(
+                                    '${SERVER_API_URL}${controller.state.to_avatar.value}')
+                                : AssetImage('assets/images/avatarman.png')
+                                    as ImageProvider,
                           ),
                         ),
                       ],
