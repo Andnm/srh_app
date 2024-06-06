@@ -23,6 +23,7 @@ class CreateNewVehicle extends StatelessWidget {
         appBar: AppBar(
           backgroundColor: Colors.white,
           scrolledUnderElevation: 0,
+          automaticallyImplyLeading: false,
           actions: [
             TextButton(
               onPressed: () {
