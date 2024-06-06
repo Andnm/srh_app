@@ -241,7 +241,7 @@ class CustomerUpdateProfileController extends GetxController {
     state.avatar.value = base64Encode(imageBytes);
     state.selectedAvatarBase64.value = base64Encode(imageBytes);
 
-    Navigator.of(context).pop();
+    Get.back();
   }
 
 //Camera
@@ -255,7 +255,7 @@ class CustomerUpdateProfileController extends GetxController {
     state.avatar.value = base64Encode(imageBytes);
     state.selectedAvatarBase64.value = base64Encode(imageBytes);
 
-    Navigator.of(context).pop();
+    Get.back();
   }
 
   //update after register

@@ -15,6 +15,7 @@ class BookedPersonState {
 
   // ảnh lấy khi get
   Rx<String> imageFront = ''.obs;
+  Rx<String> imageCustomerOnBehalf = ''.obs;
   Rx<String> imageBehind = ''.obs;
   Rx<String> imageLeft = ''.obs;
   Rx<String> imageRight = ''.obs;

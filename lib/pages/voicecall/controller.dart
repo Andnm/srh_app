@@ -41,7 +41,7 @@ class VoiceController extends GetxController {
     } else {
       messageFrom = UserStore.to.customerProfile.userID;
     }
-    initEngine();
+    await initEngine();
     await getInfo();
   }
 

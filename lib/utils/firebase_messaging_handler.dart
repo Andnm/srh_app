@@ -39,7 +39,7 @@ class FirebaseMessagingHandler {
           carPlay: false,
           criticalAlert: false,
           provisional: false);
-
+//even audience
       CallKeep.instance.onEvent.listen((event) async {
         if (event == null) return;
         final eventData = event.data as CallKeepCallData;
@@ -88,7 +88,7 @@ class FirebaseMessagingHandler {
 
       FirebaseMessaging.onMessageOpenedApp
           .listen((RemoteMessage message) async {
-        // await handleMessage(message);
+        await handleMessage(message);
       });
 
       // if (Platform.isAndroid) {
@@ -130,8 +130,7 @@ class FirebaseMessagingHandler {
           ...data,
           ...extraInfo,
         };
-        print("Extra Info: " + extraInfo.toString());
-        print("CHECK DATA: " + data.toString());
+
         displayIncomingCall(const Uuid().v4(), data);
       } else if (data["CallType"] == 1) {
         CallKeep.instance.endAllCalls();

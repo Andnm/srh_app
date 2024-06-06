@@ -21,8 +21,11 @@ class LocalNotificationService {
       onDidReceiveNotificationResponse: (details) {
         final message = RemoteMessage.fromMap(jsonDecode(details.payload!));
         print(message.notification!.body);
-        // Get.toNamed(AppRoutes.chat,
-        //     parameters: {"messageTo": "8550b5e3-3320-4643-9b45-4ecc9c65d22a"});
+        if (message.data["TypeModel"] == "Message") {
+          Map<String, dynamic> data = jsonDecode(message.data["Data"]);
+          var messageTo = data["MessageFrom"];
+          Get.toNamed(AppRoutes.chat, parameters: {"messageTo": messageTo});
+        }
       },
     );
   }

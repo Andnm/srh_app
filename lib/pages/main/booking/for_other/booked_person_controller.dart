@@ -38,8 +38,10 @@ class BookedPersonController extends GetxController {
   HomeController get homeController => Get.find<HomeController>();
   Rx<bool> editMode = true.obs;
   Rx<Uint8List?> addImageFront = Rx<Uint8List?>(null);
+  Rx<Uint8List?> addCustomerOnBehalfImage = Rx<Uint8List?>(null);
 
   Rx<XFile> selectedAddImageFront = XFile("").obs;
+  Rx<XFile> selectedCustomerOnBehalfImage = XFile("").obs;
   Rx<XFile> selectedAddImageBehind = XFile("").obs;
   Rx<XFile> selectedAddImageLeft = XFile("").obs;
   Rx<XFile> selectedAddImageRight = XFile("").obs;
@@ -70,6 +72,53 @@ class BookedPersonController extends GetxController {
       List<int> imageBytes = await returnImage.readAsBytes();
 
       switch (imageType) {
+        case "CustomerOnBehalfImage":
+          selectedCustomerOnBehalfImage.value = returnImage;
+          addCustomerOnBehalfImage.value =
+              File(returnImage.path).readAsBytesSync();
+          try {
+            EasyLoading.show(
+                indicator: const CircularProgressIndicator(),
+                maskType: EasyLoadingMaskType.clear,
+                dismissOnTap: true);
+
+            // Upload ảnh lên Firebase Storage
+            Reference storageRef = FirebaseStorage.instance
+                .ref()
+                .child('images/${returnImage.name}');
+            UploadTask uploadTask = storageRef.putFile(File(returnImage.path));
+            TaskSnapshot taskSnapshot = await uploadTask;
+            String downloadUrl = await taskSnapshot.ref.getDownloadURL();
+            EasyLoading.dismiss();
+            // Lưu link ảnh vào state
+            state.imageCustomerOnBehalf.value = downloadUrl;
+
+            // In ra link ảnh đã deploy
+            print('Download URL: $downloadUrl');
+          } catch (e) {
+            print('Error uploading image to Firebase Storage: $e');
+            // Xử lý lỗi tải lên ảnh
+            // Ví dụ: Hiển thị thông báo lỗi cho người dùng
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text('Lỗi'),
+                  content:
+                      Text('Đã xảy ra lỗi khi tải lên ảnh. Vui lòng thử lại.'),
+                  actions: [
+                    TextButton(
+                      child: Text('OK'),
+                      onPressed: () {
+                        Get.back();
+                      },
+                    ),
+                  ],
+                );
+              },
+            );
+          }
+          break;
         case "Front":
           selectedAddImageFront.value = returnImage;
           addImageFront.value = File(returnImage.path).readAsBytesSync();
@@ -154,6 +203,54 @@ class BookedPersonController extends GetxController {
           await ImagePicker().pickImage(source: ImageSource.camera);
       if (returnImage == null) return;
       switch (imageType) {
+        case "CustomerOnBehalfImage":
+          selectedCustomerOnBehalfImage.value = returnImage;
+          addCustomerOnBehalfImage.value =
+              File(returnImage.path).readAsBytesSync();
+          try {
+            EasyLoading.show(
+                indicator: const CircularProgressIndicator(),
+                maskType: EasyLoadingMaskType.clear,
+                dismissOnTap: true);
+
+            // Upload ảnh lên Firebase Storage
+            Reference storageRef = FirebaseStorage.instance
+                .ref()
+                .child('images/${returnImage.name}');
+            UploadTask uploadTask = storageRef.putFile(File(returnImage.path));
+            TaskSnapshot taskSnapshot = await uploadTask;
+            String downloadUrl = await taskSnapshot.ref.getDownloadURL();
+            EasyLoading.dismiss();
+            // Lưu link ảnh vào state
+            state.imageCustomerOnBehalf.value = downloadUrl;
+
+            // In ra link ảnh đã deploy
+            print('Download URL: $downloadUrl');
+          } catch (e) {
+            print('Error uploading image to Firebase Storage: $e');
+            // Xử lý lỗi tải lên ảnh
+            // Ví dụ: Hiển thị thông báo lỗi cho người dùng
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text('Lỗi'),
+                  content:
+                      Text('Đã xảy ra lỗi khi tải lên ảnh. Vui lòng thử lại.'),
+                  actions: [
+                    TextButton(
+                      child: Text('OK'),
+                      onPressed: () {
+                        Get.back();
+                      },
+                    ),
+                  ],
+                );
+              },
+            );
+          }
+
+          break;
         case "Front":
           selectedAddImageFront.value = returnImage;
           addImageFront.value = File(returnImage.path).readAsBytesSync();
@@ -342,6 +439,7 @@ class BookedPersonController extends GetxController {
   void updateAllFieldsValid() {
     allFieldsValid.value = nameController.text.isNotEmpty &&
         isValidPhoneNumber(phoneNumberController.text) &&
+        addCustomerOnBehalfImage.value != null &&
         addImageFront.value != null &&
         colorController.text.isNotEmpty &&
         licensePlateController.text.isNotEmpty &&
@@ -364,6 +462,7 @@ class BookedPersonController extends GetxController {
       customerBookedOnBehalf.name = nameController.text;
       customerBookedOnBehalf.phoneNumber = phoneNumberController.text;
       customerBookedOnBehalf.note = noteController.text;
+      customerBookedOnBehalf.imageUrl = state.imageCustomerOnBehalf.value;
 
       homeController.state.requestCustomerBookedOnBehalf =
           customerBookedOnBehalf;
