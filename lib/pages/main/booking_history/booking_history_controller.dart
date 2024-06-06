@@ -235,7 +235,6 @@ class BookingHistoryController extends GetxController {
 
       state.canRateBooking.value = responseCheckRating;
 
-      print('canRateBooking ${state.canRateBooking.value}');
       // nếu trả về true tức là có thể rating
       //còn trả về false tức là đã có rating sẽ gọi api để get rating
       if (!responseCheckRating) {
@@ -244,7 +243,14 @@ class BookingHistoryController extends GetxController {
 
         state.ratingDataId.value = state.ratingData.value.id ?? '';
       }
-      print('response data Rating ${state.ratingData.value}');
+
+      //lấy booking cancel
+      var resBookingCancel =
+          await BookingAPI.getBookingCancelByBookingId(bookingId: bookingId);
+      print('resBookingCancel: ${resBookingCancel}');
+
+      state.bookingCancelData.value = resBookingCancel;
+      
     } catch (e) {
       print('Error fetching booking image: $e');
       // Get.snackbar('Error fetching booking image:', '$e');

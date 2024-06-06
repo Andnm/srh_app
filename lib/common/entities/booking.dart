@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cus_dbs_app/common/entities/search_request_model.dart';
+import 'package:cus_dbs_app/common/entities/user_general.dart';
 
 import 'driver.dart';
 import 'notification/notification_booking_request.dart';
@@ -321,5 +322,57 @@ class BookingRating {
   @override
   String toString() {
     return 'BookingRating{id: $id, bookingId: $bookingId, booking: $booking, star: $star, comment: $comment, imageData: $imageData}';
+  }
+}
+
+class BookingCancelModel {
+  String? id;
+  BookingItem? booking;
+  User? cancelPerson;
+  List<String>? imageUrls;
+  String? cancelReason;
+  String? dateCreated;
+
+  BookingCancelModel(
+      {this.id,
+      this.booking,
+      this.cancelPerson,
+      this.imageUrls,
+      this.cancelReason,
+      this.dateCreated});
+
+  BookingCancelModel.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    booking = json['booking'] != null
+        ? new BookingItem.fromJson(json['booking'])
+        : null;
+    cancelPerson = json['cancelPerson'] != null
+        ? new User.fromJson(json['cancelPerson'])
+        : null;
+    if (json['imageUrls'] != null) {
+      imageUrls = <String>[];
+      json['imageUrls'].forEach((v) {
+        imageUrls!.add(v);
+      });
+    }
+    cancelReason = json['cancelReason'];
+    dateCreated = json['dateCreated'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    if (this.booking != null) {
+      data['booking'] = this.booking!.toJson();
+    }
+    if (this.cancelPerson != null) {
+      data['cancelPerson'] = this.cancelPerson!.toJson();
+    }
+    if (this.imageUrls != null) {
+      data['imageUrls'] = this.imageUrls;
+    }
+    data['cancelReason'] = this.cancelReason;
+    data['dateCreated'] = this.dateCreated;
+    return data;
   }
 }

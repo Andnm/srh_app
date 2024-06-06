@@ -19,9 +19,9 @@ class BookingHistoryDetail extends GetView<BookingHistoryController> {
       : super(key: key);
 
   final BookingHistory history;
-
   @override
   Widget build(BuildContext context) {
+    print("history booking: ${history}");
     return Obx(
       () => Scaffold(
         appBar: AppBar(
@@ -365,6 +365,7 @@ class BookingHistoryDetail extends GetView<BookingHistoryController> {
                               color: Colors.grey.shade400,
                             ),
 
+                            //distance
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
@@ -375,14 +376,7 @@ class BookingHistoryDetail extends GetView<BookingHistoryController> {
                                 ),
                                 SizedBox(width: 8),
                                 Text(
-                                  controller.calculateDistance(
-                                        history.searchRequest!.pickupLongitude!,
-                                        history.searchRequest!.pickupLatitude!,
-                                        history
-                                            .searchRequest!.dropOffLongitude!,
-                                        history.searchRequest!.dropOffLatitude!,
-                                      ) +
-                                      ' km',
+                                  '${history.searchRequest?.distance} km',
                                   style: TextStyle(
                                     fontSize: 15,
                                   ),
@@ -449,6 +443,54 @@ class BookingHistoryDetail extends GetView<BookingHistoryController> {
                                 ),
                               ],
                             ),
+
+                            if (true)
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text.rich(
+                                    TextSpan(
+                                      children: [
+                                        TextSpan(
+                                          text: 'Lý do hủy chuyến: ',
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.grey.shade600,
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text:
+                                              "asd",
+                                          style: TextStyle(
+                                            fontSize: 15,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Text.rich(
+                                    TextSpan(
+                                      children: [
+                                        TextSpan(
+                                          text: 'Người hủy chuyến: ',
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.grey.shade600,
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text:
+                                              "asdasd2435465768767645344wetrhfgdf",
+                                          style: TextStyle(
+                                            fontSize: 15,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+
                             //thời gian đón khách
                             if (history.pickUpTime != null)
                               Text.rich(
@@ -497,14 +539,14 @@ class BookingHistoryDetail extends GetView<BookingHistoryController> {
 
                             SizedBox(height: 8),
 
-                            //Thông tin người đi
+                            //Thông tin người đặt
                             if (history.searchRequest?.bookingType == "Someone")
                               Column(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'Thông tin người đi: ',
+                                    'Thông tin người đặt: ',
                                     style: TextStyle(
                                       fontSize: 16,
                                     ),
@@ -514,18 +556,82 @@ class BookingHistoryDetail extends GetView<BookingHistoryController> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Text(
-                                        'Họ và tên: ',
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          color: Colors.grey.shade600,
+                                      Row(
+                                        children: [
+                                          history
+                                                          .searchRequest
+                                                          ?.customerBookedOnBehalf
+                                                          ?.imageUrl !=
+                                                      null &&
+                                                  history
+                                                          .searchRequest
+                                                          ?.customerBookedOnBehalf
+                                                          ?.imageUrl !=
+                                                      ''
+                                              ? InstaImageViewer(
+                                                  child: ClipRRect(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                    child: Image.network(
+                                                      '${history.searchRequest?.customerBookedOnBehalf?.imageUrl}',
+                                                      width: 100,
+                                                      height: 100,
+                                                      fit: BoxFit.cover,
+                                                    ),
+                                                  ),
+                                                )
+                                              : SizedBox(
+                                                  height: 100,
+                                                  width: 100,
+                                                  child: Container(
+                                                    color: Colors.grey[200],
+                                                  ),
+                                                )
+                                        ],
+                                      ),
+                                      Text.rich(
+                                        TextSpan(
+                                          children: [
+                                            TextSpan(
+                                              text: 'Họ và tên: ',
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                color: Colors.grey.shade600,
+                                              ),
+                                            ),
+                                            TextSpan(
+                                              text: history
+                                                  .searchRequest
+                                                  ?.customerBookedOnBehalf
+                                                  ?.name,
+                                              style: TextStyle(
+                                                fontSize: 15,
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
-                                      Text(
-                                        'Số điện thoại: ',
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          color: Colors.grey.shade600,
+                                      Text.rich(
+                                        TextSpan(
+                                          children: [
+                                            TextSpan(
+                                              text: 'Số điện thoại: ',
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                color: Colors.grey.shade600,
+                                              ),
+                                            ),
+                                            TextSpan(
+                                              text: history
+                                                  .searchRequest
+                                                  ?.customerBookedOnBehalf
+                                                  ?.phoneNumber,
+                                              style: TextStyle(
+                                                fontSize: 15,
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ],
@@ -535,8 +641,10 @@ class BookingHistoryDetail extends GetView<BookingHistoryController> {
                               ),
 
                             // ảnh khách hàng trước chuyến đi
-                            if (history.status == 'Complete' ||
-                                history.status == 'CheckIn')
+                            if (history.status != 'Accept' &&
+                                history.status != 'Arrived' &&
+                                history.status != 'CheckIn' &&
+                                history.status != 'Cancel')
                               Column(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -563,14 +671,16 @@ class BookingHistoryDetail extends GetView<BookingHistoryController> {
                                                         .value
                                                         .bookingImageUrl !=
                                                     ''
-                                            ? ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                                child: Image.network(
-                                                  '${SERVER_API_URL}${controller.state.customerBookingImageCheckin.value.bookingImageUrl ?? ''}',
-                                                  width: 100,
-                                                  height: 100,
-                                                  fit: BoxFit.cover,
+                                            ? InstaImageViewer(
+                                                child: ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                  child: Image.network(
+                                                    '${SERVER_API_URL}${controller.state.customerBookingImageCheckin.value.bookingImageUrl ?? ''}',
+                                                    width: 100,
+                                                    height: 100,
+                                                    fit: BoxFit.cover,
+                                                  ),
                                                 ),
                                               )
                                             : SizedBox(
@@ -588,8 +698,7 @@ class BookingHistoryDetail extends GetView<BookingHistoryController> {
                               ),
 
                             // ảnh khách hàng sau chuyến đi
-                            if (history.status == 'Complete' ||
-                                history.status == 'CheckOut')
+                            if (history.status == 'Complete')
                               Column(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -616,14 +725,16 @@ class BookingHistoryDetail extends GetView<BookingHistoryController> {
                                                         .value
                                                         .bookingImageUrl !=
                                                     ''
-                                            ? ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                                child: Image.network(
-                                                  '${SERVER_API_URL}${controller.state.customerBookingImageCheckout.value.bookingImageUrl ?? ''}',
-                                                  width: 100,
-                                                  height: 100,
-                                                  fit: BoxFit.cover,
+                                            ? InstaImageViewer(
+                                                child: ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                  child: Image.network(
+                                                    '${SERVER_API_URL}${controller.state.customerBookingImageCheckout.value.bookingImageUrl ?? ''}',
+                                                    width: 100,
+                                                    height: 100,
+                                                    fit: BoxFit.cover,
+                                                  ),
                                                 ),
                                               )
                                             : SizedBox(
@@ -686,8 +797,10 @@ class BookingHistoryDetail extends GetView<BookingHistoryController> {
                             ),
 
                             // ảnh xe trước chuyến đi
-                            if (history.status == 'Complete' ||
-                                history.status == 'CheckIn')
+                            if (history.status != 'Accept' &&
+                                history.status != 'Arrived' &&
+                                history.status != 'CheckIn' &&
+                                history.status != 'Cancel')
                               Column(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,

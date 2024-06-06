@@ -1,3 +1,4 @@
+import 'package:cus_dbs_app/common/entities/booking.dart';
 import 'package:cus_dbs_app/common/entities/booking_history.dart';
 import 'package:cus_dbs_app/common/entities/booking_image.dart';
 import 'package:cus_dbs_app/common/entities/rating.dart';
@@ -32,4 +33,7 @@ class BookingHistoryState {
 
   Rx<RatingModel> ratingData = Rx<RatingModel>(RatingModel());
   Rx<String> ratingDataId = Rx<String>("");
+
+  Rx<BookingCancelModel> bookingCancelData =
+      Rx<BookingCancelModel>(BookingCancelModel());
 }

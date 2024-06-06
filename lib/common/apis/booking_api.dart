@@ -1,3 +1,4 @@
+import 'package:cus_dbs_app/common/entities/booking.dart';
 import 'package:cus_dbs_app/common/entities/booking_image.dart';
 import 'package:cus_dbs_app/common/entities/rating.dart';
 import 'package:cus_dbs_app/utils/http.dart';
@@ -58,5 +59,11 @@ class BookingAPI {
       {required String bookingId}) async {
     var response = await HttpUtil().get('api/Rating/Booking/$bookingId');
     return RatingModel.fromJson(response);
+  }
+
+  static Future<BookingCancelModel> getBookingCancelByBookingId(
+      {required String bookingId}) async {
+    var response = await HttpUtil().get('');
+    return BookingCancelModel.fromJson(response);
   }
 }
