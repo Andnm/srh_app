@@ -25,6 +25,7 @@ import '../../../../common/entities/direction_detail.dart';
 import '../../../../common/widgets/dialogs/alert_dialog.dart';
 
 import '../../../../services/socket_service.dart';
+import '../../../../values/roles.dart';
 import 'index.dart';
 import 'values/api_map_constants.dart';
 
@@ -44,7 +45,13 @@ class MapController extends GetxController {
   Future<void> onInit() async {
     super.onInit();
     // Test sự kiện 'newNotify'
-
+    await getCurrentLocation(() async {
+      if (AppRoles.isDriver) {
+        await initDataDriver();
+      } else {
+        initDataCustomer();
+      }
+    });
     // await makeIconsCustoms();
 
     SystemChrome.setPreferredOrientations(

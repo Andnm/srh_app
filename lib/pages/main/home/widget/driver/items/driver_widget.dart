@@ -45,11 +45,14 @@ class DriverWidget extends StatelessWidget {
           }
 
           if (controller.isCancel) {
-            if (Get.isBottomSheetOpen ?? false) {
-              Get.back(); // Đóng CancelReasonPage nếu đang mở
-            }
-            controller.resetAppStatus();
-            controller.state.appBookingData.value = NotificationBookingModel();
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (Get.isBottomSheetOpen ?? false) {
+                Get.back(); // Đóng CancelReasonPage nếu đang mở
+              }
+              controller.resetAppStatus();
+              controller.state.appBookingData.value =
+                  NotificationBookingModel();
+            });
           }
           if (controller.isComplete) {
             controller.isCheckInApi.value = true;

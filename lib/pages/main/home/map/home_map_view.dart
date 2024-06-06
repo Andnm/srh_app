@@ -39,13 +39,6 @@ class MapPage extends GetView<MapController> {
                     controller.mapCompletePageController
                         .complete(controller.controllerOfGoogleMap);
                   }
-                  await controller.getCurrentLocation(() async {
-                    if (AppRoles.isDriver) {
-                      await controller.initDataDriver();
-                    } else {
-                      controller.initDataCustomer();
-                    }
-                  });
                   Get.find<HomeController>().isShowWidgets.value = true;
                 } catch (e) {
                   print("Error in onMapCreated: $e");
