@@ -1,4 +1,3 @@
-import 'package:cus_dbs_app/common/entities/customer.dart';
 import 'package:cus_dbs_app/common/entities/driver.dart';
 import 'package:cus_dbs_app/common/entities/search_request_model.dart';
 

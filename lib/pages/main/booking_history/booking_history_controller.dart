@@ -11,83 +11,53 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'index.dart';
 import 'dart:math';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:cus_dbs_app/common/entities/booking_history.dart';
 
 class BookingHistoryController extends GetxController {
   final state = BookingHistoryState();
   final ScrollController scrollController = ScrollController();
 
+  final PagingController<int, BookingHistory> pagingController =
+      PagingController(firstPageKey: 1);
+
   @override
   void onInit() {
     super.onInit();
+    pagingController.addPageRequestListener((pageKey) {
+      fetchBookingHistoryByPageIndex(pageKey);
+    });
   }
 
-  Future<void> fetchBookingHistoryFromApi() async {
-    try {
+  Future<void> fetchBookingHistoryByPageIndex(int pageKey) async {
+    if (pageKey == 1) {
       EasyLoading.show(
-          indicator: const CircularProgressIndicator(
-            backgroundColor: Colors.white,
-            valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
-          ),
-          maskType: EasyLoadingMaskType.clear,
-          dismissOnTap: true);
-
-      var response;
-      if (AppRoles.isDriver) {
-        response = await DriverHistoryAPI.getAllDriverBookingHistoryByDesc(
-            pageIndex: state.pageIndex.value, pageSize: state.pageSize.value);
-      } else {
-        response = await CustomerHistoryAPI.getAllCustomerBookingHistoryByDesc(
-            pageIndex: state.pageIndex.value, pageSize: state.pageSize.value);
-      }
-
-      state.data.value = response.data ?? [];
-
-      state.totalPage.value = response.totalPage ?? 0;
-      state.totalSize.value = response.totalSize ?? 0;
-
-      EasyLoading.dismiss();
-    } catch (e) {
-      // Get.snackbar('Error fetching all booking history:', '$e');
-      print('Error fetching all booking history: $e');
+        indicator: const CircularProgressIndicator(),
+        maskType: EasyLoadingMaskType.clear,
+        dismissOnTap: true,
+      );
     }
-  }
 
-  void _scrollToTop() {
-    scrollController.animateTo(
-      0.0,
-      duration: Duration(milliseconds: 500),
-      curve: Curves.easeInOut,
-    );
-  }
-
-  void changePage(int newPageIndex) {
-    _scrollToTop();
-    state.pageIndex.value = newPageIndex;
-    fetchBookingHistoryByPageIndex(pageIndex: newPageIndex);
-  }
-
-  Future<void> fetchBookingHistoryByPageIndex({required int pageIndex}) async {
     try {
-      EasyLoading.show(
-          indicator: const CircularProgressIndicator(
-            backgroundColor: Colors.white,
-            valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
-          ),
-          maskType: EasyLoadingMaskType.clear,
-          dismissOnTap: true);
-
       var response;
       if (AppRoles.isDriver) {
         response = await DriverHistoryAPI.getAllDriverBookingHistoryByDesc(
-            pageIndex: state.pageIndex.value, pageSize: state.pageSize.value);
+            pageIndex: pageKey, pageSize: state.pageSize.value);
       } else {
         response = await CustomerHistoryAPI.getAllCustomerBookingHistoryByDesc(
-            pageIndex: state.pageIndex.value, pageSize: state.pageSize.value);
+            pageIndex: pageKey, pageSize: state.pageSize.value);
       }
 
       state.data.value = response.data ?? [];
       state.totalPage.value = response.totalPage ?? 0;
-      state.totalSize.value = response.totalSize ?? 0;
+
+      final isLastPage = state.totalPage.value < state.pageSize.value;
+      if (isLastPage) {
+        pagingController.appendLastPage(state.data.value);
+      } else {
+        final nextPageKey = pageKey + 1;
+        pagingController.appendPage(state.data.value, nextPageKey);
+      }
     } catch (e) {
       // Get.snackbar('Error fetching booking history by page index:', '$e');
       print('Error fetching booking history by page index: $e');
@@ -250,7 +220,6 @@ class BookingHistoryController extends GetxController {
       print('resBookingCancel: ${resBookingCancel}');
 
       state.bookingCancelData.value = resBookingCancel;
-      
     } catch (e) {
       print('Error fetching booking image: $e');
       // Get.snackbar('Error fetching booking image:', '$e');
@@ -272,6 +241,8 @@ class BookingHistoryController extends GetxController {
 
   @override
   void onClose() {
+    pagingController.dispose();
+    state.data.value = [];
     super.onClose();
   }
 }

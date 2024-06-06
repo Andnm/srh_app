@@ -12,10 +12,10 @@ import 'index.dart';
 
 class NotificationController extends GetxController {
   final state = NotificationState();
-  static const _pageSize = 10;
-  final pagingController =
-      PagingController<int, NotificationEntity>(firstPageKey: 0);
+
   static MainController get _mainController => Get.find<MainController>();
+  final PagingController<int, NotificationEntity> pagingController =
+      PagingController(firstPageKey: 1);
 
   @override
   void onInit() {
@@ -26,7 +26,7 @@ class NotificationController extends GetxController {
   }
 
   Future<void> fetchNotificationListFromApi(int pageKey) async {
-    if (pageKey == 0) {
+    if (pageKey == 1) {
       EasyLoading.show(
         indicator: const CircularProgressIndicator(),
         maskType: EasyLoadingMaskType.clear,
@@ -35,36 +35,23 @@ class NotificationController extends GetxController {
     }
 
     try {
-      state.dataNotifications.value =
-          await NotificationService.getNotificationsList();
-      fetchPage(pageKey);
-    } catch (e) {
-      print('Error fetching notification list: $e');
-      pagingController.error = 'Error fetching notification list: $e';
-    } finally {
-      EasyLoading.dismiss();
-    }
-  }
+      var response = await NotificationService.getNotificationsList(
+          pageIndex: pageKey, pageSize: state.pageSize.value);
 
-  void fetchPage(int pageKey) {
-    try {
-      final start = pageKey;
-      final end = start + _pageSize;
-      final newNotifications = state.dataNotifications.value.sublist(
-        start,
-        end > state.dataNotifications.value.length
-            ? state.dataNotifications.value.length
-            : end,
-      );
-      final isLastPage = newNotifications.length < _pageSize;
+      state.dataNotifications.value = response.data ?? [];
+      state.totalPage.value = response.totalPage ?? 0;
+
+      final isLastPage = state.totalPage.value < state.pageSize.value;
       if (isLastPage) {
-        pagingController.appendLastPage(newNotifications);
+        pagingController.appendLastPage(state.dataNotifications.value);
       } else {
-        final nextPageKey = pageKey + newNotifications.length;
-        pagingController.appendPage(newNotifications, nextPageKey);
+        final nextPageKey = pageKey + 1;
+        pagingController.appendPage(state.dataNotifications.value, nextPageKey);
       }
     } catch (e) {
-      pagingController.error = 'Error fetching page: $e';
+      print('Error fetching notification list: $e');
+    } finally {
+      EasyLoading.dismiss();
     }
   }
 
@@ -176,6 +163,7 @@ class NotificationController extends GetxController {
   @override
   void onClose() {
     pagingController.dispose();
+    state.dataNotifications.value = [];
     super.onClose();
   }
 }

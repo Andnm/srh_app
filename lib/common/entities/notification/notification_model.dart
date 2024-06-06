@@ -124,3 +124,47 @@ class NotificationEntity {
     return data;
   }
 }
+
+class NotificationList {
+  int? pageIndex;
+  int? pageSize;
+  int? totalPage;
+  int? totalSize;
+  int? pageSkip;
+  List<NotificationEntity>? data;
+
+  NotificationList(
+      {this.pageIndex,
+      this.pageSize,
+      this.totalPage,
+      this.totalSize,
+      this.pageSkip,
+      this.data});
+
+  NotificationList.fromJson(Map<String, dynamic> json) {
+    pageIndex = json['pageIndex'];
+    pageSize = json['pageSize'];
+    totalPage = json['totalPage'];
+    totalSize = json['totalSize'];
+    pageSkip = json['pageSkip'];
+    if (json['data'] != null) {
+      data = <NotificationEntity>[];
+      json['data'].forEach((v) {
+        data!.add(new NotificationEntity.fromJson(v));
+      });
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['pageIndex'] = this.pageIndex;
+    data['pageSize'] = this.pageSize;
+    data['totalPage'] = this.totalPage;
+    data['totalSize'] = this.totalSize;
+    data['pageSkip'] = this.pageSkip;
+    if (this.data != null) {
+      data['data'] = this.data!.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}

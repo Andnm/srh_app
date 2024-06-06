@@ -10,7 +10,7 @@ import 'package:flutter_svg/svg.dart';
 class NotificationPage extends GetView<NotificationController> {
   @override
   Widget build(BuildContext context) {
-    controller.fetchNotificationListFromApi(0);
+    controller.fetchNotificationListFromApi(1);
 
     return Obx(
       () => Scaffold(
