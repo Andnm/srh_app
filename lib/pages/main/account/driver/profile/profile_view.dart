@@ -2,7 +2,9 @@ import 'package:cus_dbs_app/common/widgets/custom_dropdown_field.dart';
 import 'package:cus_dbs_app/common/widgets/custom_text_field.dart';
 import 'package:cus_dbs_app/pages/main/account/driver/profile/index.dart';
 import 'package:cus_dbs_app/values/colors.dart';
+import 'package:cus_dbs_app/values/server.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:cus_dbs_app/store/user_store.dart';
 
@@ -14,6 +16,15 @@ class DriverProfilePage extends GetView<DriverProfileController> {
 
   @override
   Widget build(BuildContext context) {
+    controller.fetchDriverProfileFromApi();
+
+    final Map<String?, String> genderMap = {
+      null: 'Lựa chọn giới tính',
+      'Male': 'Nam',
+      'Female': 'Nữ',
+      'Other': 'Khác'
+    };
+
     return Obx(
       () => Scaffold(
         appBar: AppBar(
@@ -44,10 +55,24 @@ class DriverProfilePage extends GetView<DriverProfileController> {
                         ),
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(60),
-                          child: Image.asset(
-                            "assets/images/avatarman.png",
-                            fit: BoxFit.cover,
-                          ),
+                          child: controller
+                                  .state.dataDriver.value.avatar!.isNotEmpty
+                              ? Image.network(
+                                  '${SERVER_API_URL}${controller.state.dataDriver.value.avatar}',
+                                  width: 150.w,
+                                  height: 150.h,
+                                  fit: BoxFit.cover,
+                                )
+                              : Container(
+                                  width: 150.w,
+                                  height: 150.h,
+                                  color: Colors.grey,
+                                  child: Icon(
+                                    Icons.person,
+                                    color: AppColors.whiteColor,
+                                    size: 50.sp,
+                                  ),
+                                ),
                         ),
                       ),
                     ),
@@ -55,7 +80,7 @@ class DriverProfilePage extends GetView<DriverProfileController> {
                 ),
                 const SizedBox(height: 10),
                 Text(
-                  controller.state.name.value,
+                  controller.state.dataDriver.value.name ?? '',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                   ),
@@ -128,20 +153,35 @@ class DriverProfilePage extends GetView<DriverProfileController> {
                 ),
 
                 // gender
-                CustomDropdownField(
-                  value: controller.state.gender.value.isNotEmpty
-                      ? controller.state.gender.value
-                      : null,
-                  onChanged: controller.state.editMode.value
-                      ? (String? newValue) {
-                          controller.state.gender.value = newValue!;
-                        }
-                      : null,
-                  labelText: 'Giới tính',
-                  placeholderText: 'Lựa chọn giới tính',
-                  editMode: controller.state.editMode.value,
-                  items: ['', 'Male', 'Female', 'Other'],
+                InputDecorator(
+                  decoration: InputDecoration(
+                    labelText: 'Giới tính',
+                    border: OutlineInputBorder(),
+                    prefixIcon: Icon(Icons.transgender),
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.grey[500]!),
+                    ),
+                  ),
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton<String?>(
+                      isDense: true,
+                      value:
+                          controller.state.dataDriver.value.gender!.isNotEmpty
+                              ? controller.state.dataDriver.value.gender
+                              : null,
+                      onChanged: null,
+                      items: genderMap.entries.map((entry) {
+                        return DropdownMenuItem<String?>(
+                          value: entry.key,
+                          child: Text(entry.value),
+                        );
+                      }).toList(),
+                    ),
+                  ),
                 ),
+
                 SizedBox(height: 10),
 
                 // public gender

@@ -12,34 +12,35 @@ class User {
   bool? isPublicGender;
   bool? isActive;
 
-  User(
-      {this.id,
-      this.name,
-      this.phoneNumber,
-      this.userName,
-      this.email,
-      this.address,
-      this.star,
-      this.avatar,
-      this.gender,
-      this.dob,
-      this.isPublicGender,
-      this.isActive});
+   User({
+    this.id,
+    this.name = '',
+    this.phoneNumber = '',
+    this.userName = '',
+    this.email = '',
+    this.address = '',
+    this.star = 0,
+    this.avatar = '',
+    this.gender = '',
+    this.dob = '',
+    this.isPublicGender = true,
+    this.isActive = true,
+  });
 
   User.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    name = json['name'];
-    phoneNumber = json['phoneNumber'];
-    userName = json['userName'];
-    email = json['email'];
-    address = json['address'];
+    name = json['name'] ?? '';
+    phoneNumber = json['phoneNumber'] ?? '';
+    userName = json['userName'] ?? '';
+    email = json['email'] ?? '';
+    address = json['address'] ?? '';
     star:
     json['star'] ?? 0;
-    avatar = json['avatar'];
-    gender = json['gender'];
-    dob = json['dob'];
-    isPublicGender = json['isPublicGender'];
-    isActive = json['isActive'];
+    avatar = json['avatar'] ?? '';
+    gender = json['gender'] ?? '';
+    dob = json['dob'] ?? '';
+    isPublicGender = json['isPublicGender'] ?? true;
+    isActive = json['isActive'] ?? true;
   }
 
   Map<String, dynamic> toJson() {

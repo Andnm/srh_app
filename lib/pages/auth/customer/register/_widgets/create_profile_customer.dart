@@ -19,6 +19,7 @@ class CreateNewProfileCustomer extends GetView<CustomerRegisterController> {
       'Female': 'Nữ',
       'Other': 'Khác'
     };
+    
     return Obx(
       () => Scaffold(
         appBar: AppBar(

@@ -1,13 +1,10 @@
+import 'package:cus_dbs_app/common/entities/user_general.dart';
 import 'package:get/get.dart';
 
 class DriverProfileState {
-  Rx<String> name = ''.obs;
-  Rx<String> address = ''.obs;
-  Rx<String> phoneNumber = ''.obs;
-  Rx<String> gender = ''.obs;
-  Rx<String> dob = ''.obs;
-  Rx<String> email = ''.obs;
-  Rx<bool> isPublicGender = false.obs;
+  Rx<User> dataDriver = User().obs;
+
+  Rx<bool> isPublicGender = true.obs;
 
   Rx<bool> editMode = false.obs;
   Rx<String> errorDob = ''.obs;

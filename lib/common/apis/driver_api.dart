@@ -5,6 +5,7 @@ import 'package:cus_dbs_app/common/entities/customer.dart';
 
 import 'package:cus_dbs_app/common/entities/driver.dart';
 import 'package:cus_dbs_app/common/entities/place.dart';
+import 'package:cus_dbs_app/common/entities/user_general.dart';
 import 'package:cus_dbs_app/utils/http.dart';
 import 'package:dio/dio.dart';
 
@@ -16,9 +17,9 @@ import 'dart:convert';
 import '../entities/driver_statistics.dart';
 
 class DriverAPI {
-  static Future<Map<String, dynamic>> getDriverProfile() async {
+  static Future<User> getDriverProfile() async {
     var response = await HttpUtil().get('api/Driver/Profile');
-    return response;
+    return User.fromJson(response);
   }
 
   static Future<DriverItem> login({

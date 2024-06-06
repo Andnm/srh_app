@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:cus_dbs_app/common/apis/driver_api.dart';
 import 'package:cus_dbs_app/common/entities/driver.dart';
+import 'package:cus_dbs_app/common/entities/user_general.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'index.dart';
@@ -19,50 +20,17 @@ class DriverProfileController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    fetchDriverProfileFromApi();
-    update();
-  }
-
-  Future<Map<String, dynamic>?> _asyncGetDriverProfile() async {
-    try {
-      Map<String, dynamic> response = await DriverAPI.getDriverProfile();
-      return response;
-    } catch (e) {
-      print('Error fetching driver profile: $e');
-      return null;
-    }
   }
 
   Future<void> fetchDriverProfileFromApi() async {
     try {
-      Map<String, dynamic>? response = await _asyncGetDriverProfile();
-      if (response != null) {
-        String name = response['name'];
-        String address = response['address'];
-        String phoneNumber = response['phoneNumber'];
-        String gender = response['gender'];
-        String dob = response['dob'];
-        String email = response['email'];
-
-        state.name.value = name;
-        state.address.value = address;
-        state.phoneNumber.value = phoneNumber;
-        state.gender.value = gender;
-        state.dob.value = dob;
-        state.email.value = dob;
-        state.isPublicGender.value = response['isPublicGender'];
-
-        nameController.text = name;
-        addressController.text = address;
-        phoneNumberController.text = phoneNumber;
-        genderController.text = gender;
-        dobController.text = dob;
-
-        update();
-      } else {
-        // Get.snackbar(
-        //     'Error fetching driver profile:', 'Unable to retrieve data');
-      }
+      User response = await DriverAPI.getDriverProfile();
+      state.dataDriver.value = response;
+      addressController.text = state.dataDriver.value.address ?? "";
+      nameController.text = state.dataDriver.value.name ?? "";
+      phoneNumberController.text = state.dataDriver.value.phoneNumber ?? "";
+      dobController.text = state.dataDriver.value.dob ?? "";
+      state.isPublicGender.value = state.dataDriver.value.isPublicGender!;
     } catch (e) {
       print('Error fetching driver profile: $e');
       // Get.snackbar('Error fetching driver profile:', '$e');
