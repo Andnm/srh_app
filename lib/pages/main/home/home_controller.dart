@@ -176,6 +176,13 @@ class HomeController extends GetxController {
     await InternetChecker.startListening();
     await SignalRService.initialize();
     await initLocation();
+    await mapPageController.getCurrentLocation(() async {
+      if (AppRoles.isDriver) {
+        await mapPageController.initDataDriver();
+      } else {
+        mapPageController.initDataCustomer();
+      }
+    });
 
     controllers =
         List.generate(noteTypes.length, (_) => TextEditingController());
@@ -866,6 +873,7 @@ class HomeController extends GetxController {
     double totalAmountWithServiceFee = servicePrice + surchargeAmount;
 
     state.priceOfSearchRequest.value = totalAmountWithServiceFee.toInt();
+    print("Tong chuyen di ${state.priceOfSearchRequest.value}");
   }
 
   bool isWithinTimeRange(String currentHour, String timeRange) {
