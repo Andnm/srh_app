@@ -46,6 +46,9 @@ class MapController extends GetxController {
     super.onInit();
     // Test sự kiện 'newNotify'
     // await makeIconsCustoms();
+    if (!homeController.isDriver) {
+      await homeController.checkIsFromTerminated();
+    }
     await getCurrentLocation(() async {
       if (AppRoles.isDriver) {
         await initDataDriver();
@@ -269,62 +272,68 @@ class MapController extends GetxController {
   Future<void> updatePolyline(
       {required AddressModel pickupLocation,
       required AddressModel dropOffLocation}) async {
-    print("Updated pickupLocation $pickupLocation");
-    print("Updated dropOffLocation $dropOffLocation");
-    PolylinePoints polylinePoints = PolylinePoints();
-    PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
-      GOOGLE_MAP_API_KEY,
-      PointLatLng(pickupLocation.latitudePosition ?? 0.0,
-          pickupLocation.longitudePosition ?? 0.0),
-      PointLatLng(dropOffLocation.latitudePosition ?? 0.0,
-          dropOffLocation.longitudePosition ?? 0.0),
-    );
-    print("POLY RESULT ${result.points}");
-    state.polylineCoordinates.clear();
-    if (!homeController.isDriver) {
-      if (homeController.isAccept ||
-          homeController.isArrived ||
-          homeController.isCheckIn) {
-        print("Before removing marker: ${state.markerSet}");
-        state.markerSet.value.removeWhere((marker) =>
-            marker.markerId.value == "dropOffDestinationPointMarkerID");
-        Marker dropOffDestinationPointMarker = Marker(
-          markerId: const MarkerId("dropOffDestinationPointMarkerID"),
-          position: LatLng(dropOffLocation.latitudePosition!,
-              dropOffLocation.longitudePosition!),
-          icon: state.dropoffIcon.value,
-        );
-        state.markerSet.value.add(dropOffDestinationPointMarker);
-      } else {
-        state.markerSet.value.removeWhere(
-            (marker) => marker.markerId.value == "pickUpPointMarkerID");
-        Marker pickupPointMarker = Marker(
-          markerId: const MarkerId("pickUpPointMarkerID"),
-          position: LatLng(pickupLocation.latitudePosition!,
-              pickupLocation.longitudePosition!),
-          icon: state.pickupIcon.value,
-        );
-        state.markerSet.value.add(pickupPointMarker);
-      }
-    }
-
-    if (result.points.isNotEmpty) {
-      state.polylineCoordinates.value = result.points
-          .map((point) => LatLng(point.latitude, point.longitude))
-          .toList();
-      Polyline polyline = Polyline(
-        polylineId: const PolylineId("polylineID"),
-        color: Colors.blueAccent,
-        points: state.polylineCoordinates,
-        jointType: JointType.round,
-        width: 4,
-        startCap: Cap.roundCap,
-        endCap: Cap.roundCap,
-        geodesic: true,
+    try {
+      print("Updated pickupLocation $pickupLocation");
+      print("Updated dropOffLocation $dropOffLocation");
+      PolylinePoints polylinePoints = PolylinePoints();
+      PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
+        GOOGLE_MAP_API_KEY,
+        PointLatLng(pickupLocation.latitudePosition ?? 0.0,
+            pickupLocation.longitudePosition ?? 0.0),
+        PointLatLng(dropOffLocation.latitudePosition ?? 0.0,
+            dropOffLocation.longitudePosition ?? 0.0),
       );
-      state.polylineSet.clear();
-      state.polylineSet.add(polyline);
-      print("Updated polylineSet: ${state.polylineSet.value}");
+      print("POLY RESULT ${result.points}");
+      state.polylineCoordinates.clear();
+      if (!homeController.isDriver) {
+        if (homeController.isAccept ||
+            homeController.isArrived ||
+            homeController.isCheckIn) {
+          print("Before removing marker: ${state.markerSet}");
+          state.markerSet.value.removeWhere((marker) =>
+              marker.markerId.value == "dropOffDestinationPointMarkerID");
+          Marker dropOffDestinationPointMarker = Marker(
+            markerId: const MarkerId("dropOffDestinationPointMarkerID"),
+            position: LatLng(dropOffLocation.latitudePosition!,
+                dropOffLocation.longitudePosition!),
+            icon: state.dropoffIcon.value,
+          );
+          state.markerSet.value.add(dropOffDestinationPointMarker);
+        } else {
+          state.markerSet.value.removeWhere(
+              (marker) => marker.markerId.value == "pickUpPointMarkerID");
+          Marker pickupPointMarker = Marker(
+            markerId: const MarkerId("pickUpPointMarkerID"),
+            position: LatLng(pickupLocation.latitudePosition!,
+                pickupLocation.longitudePosition!),
+            icon: state.pickupIcon.value,
+          );
+          state.markerSet.value.add(pickupPointMarker);
+        }
+      }
+
+      if (result.points.isNotEmpty) {
+        state.polylineCoordinates.value = result.points
+            .map((point) => LatLng(point.latitude, point.longitude))
+            .toList();
+        Polyline polyline = Polyline(
+          polylineId: const PolylineId("polylineID"),
+          color: Colors.blueAccent,
+          points: state.polylineCoordinates,
+          jointType: JointType.round,
+          width: 4,
+          startCap: Cap.roundCap,
+          endCap: Cap.roundCap,
+          geodesic: true,
+        );
+        state.polylineSet.clear();
+        state.polylineSet.add(polyline);
+        print("Updated polylineSet: ${state.polylineSet.value}");
+      }
+    } catch (e) {
+      print("ERROR IN UPDATE POLYLINE: $e");
+      // Handle the exception here, such as showing an error message to the user
+      // or performing any necessary error handling logic
     }
   }
 

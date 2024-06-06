@@ -155,7 +155,7 @@ class HomeController extends GetxController {
   bool get isShowInfo => isAccept || isArrived || isOnGoing || isCheckInOrOut;
   bool get isFromOnGoingToComplete => isOnGoing || isCheckInOrOut || isComplete;
   // isAccept || isArrived || isOnGoing || (!isDriver && isCheckInOrOut);
-  bool get isAvailableCancel => isAccept || isArrived || isCheckIn;
+  bool get isAvailableCancel => isAccept || isArrived || isCheckInOrOut;
   bool get isAvailableEmergency => isOnGoing || isCheckOut;
   //Customer
   bool get isSearchRequest => isPending || isShowDriver;
@@ -178,9 +178,7 @@ class HomeController extends GetxController {
 
     controllers =
         List.generate(noteTypes.length, (_) => TextEditingController());
-    if (!isDriver) {
-      await checkIsFromTerminated();
-    }
+
     await getPriceConfiguration();
   }
 
