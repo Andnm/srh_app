@@ -42,7 +42,6 @@ class VoiceController extends GetxController {
       messageFrom = UserStore.to.customerProfile.userID;
     }
     await initEngine();
-    await engine.setEnableSpeakerphone(false);
     await getInfo();
   }
 

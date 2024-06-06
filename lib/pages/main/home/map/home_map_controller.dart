@@ -46,6 +46,13 @@ class MapController extends GetxController {
     super.onInit();
     // Test sự kiện 'newNotify'
     // await makeIconsCustoms();
+    await getCurrentLocation(() async {
+      if (AppRoles.isDriver) {
+        await initDataDriver();
+      } else {
+        initDataCustomer();
+      }
+    });
 
     SystemChrome.setPreferredOrientations(
         [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
@@ -368,20 +375,32 @@ class MapController extends GetxController {
         break;
 
       case BOOKING_STATUS.ARRIVED:
-      // state.pickupIcon.value = iconTracking;
-      // state.dropoffIcon.value = iconFinal;
-      // if (!homeController.isDriver) {
-      //   state.pickupIcon.value = iconPassenger;
-      //   state.dropoffIcon.value = iconTracking;
-      // } else {
-      //   // state.pickupIcon.value = iconTracking;
-      //   state.dropoffIcon.value = iconPassenger;
-      // }
-      // break;
+        if (!homeController.isDriver) {
+          state.pickupIcon.value = iconPassenger;
+          state.dropoffIcon.value = iconTracking;
+        } else {
+          // state.pickupIcon.value = iconTracking;
+          state.dropoffIcon.value = iconFinal;
+        }
+        break;
+      case BOOKING_STATUS.CHECKIN:
+        if (!homeController.isDriver) {
+          state.pickupIcon.value = iconPassenger;
+          state.dropoffIcon.value = iconTracking;
+        } else {
+          // state.pickupIcon.value = iconTracking;
+          state.dropoffIcon.value = iconFinal;
+        }
+        break;
       case BOOKING_STATUS.ONGOING:
         state.pickupIcon.value = iconCar;
         state.dropoffIcon.value = iconFinal;
         break;
+      case BOOKING_STATUS.CHECKOUT:
+        state.pickupIcon.value = iconCar;
+        state.dropoffIcon.value = iconFinal;
+        break;
+
       default:
         break;
     }

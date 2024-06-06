@@ -175,13 +175,6 @@ class HomeController extends GetxController {
     await InternetChecker.startListening();
     await SignalRService.initialize();
     await initLocation();
-    await mapPageController.getCurrentLocation(() async {
-      if (AppRoles.isDriver) {
-        await mapPageController.initDataDriver();
-      } else {
-        mapPageController.initDataCustomer();
-      }
-    });
 
     controllers =
         List.generate(noteTypes.length, (_) => TextEditingController());
