@@ -162,7 +162,8 @@ class BookingHistoryController extends GetxController {
     return result;
   }
 
-  Future<void> fetchAllBookingImageFromApi(String bookingId) async {
+  Future<void> fetchAllBookingImageFromApi(
+      String bookingId, BookingHistory bookingHistoryItem) async {
     EasyLoading.show(
         indicator: const CircularProgressIndicator(
           backgroundColor: Colors.white,
@@ -172,57 +173,59 @@ class BookingHistoryController extends GetxController {
         dismissOnTap: true);
 
     try {
-      List<BookingImage> responseCheckin =
-          await BookingAPI.getAllBookingCheckInImage(bookingId: bookingId);
-      List<BookingImage> responseCheckout =
-          await BookingAPI.getAllBookingCheckOutImage(bookingId: bookingId);
+      if (bookingHistoryItem.status != "Cancel") {
+        List<BookingImage> responseCheckin =
+            await BookingAPI.getAllBookingCheckInImage(bookingId: bookingId);
+        List<BookingImage> responseCheckout =
+            await BookingAPI.getAllBookingCheckOutImage(bookingId: bookingId);
 
-      // xóa dữ liệu cũ
-      state.listVehicleBookingImageCheckin.value.clear();
-      state.listVehicleBookingImageCheckout.value.clear();
-      state.customerBookingImageCheckin.value = BookingImage();
-      state.customerBookingImageCheckout.value = BookingImage();
+        // xóa dữ liệu cũ
+        state.listVehicleBookingImageCheckin.value.clear();
+        state.listVehicleBookingImageCheckout.value.clear();
+        state.customerBookingImageCheckin.value = BookingImage();
+        state.customerBookingImageCheckout.value = BookingImage();
 
-      for (var image in responseCheckin) {
-        if (image.bookingImageType != 'Customer') {
-          state.listVehicleBookingImageCheckin.value.add(image);
-        } else {
-          state.customerBookingImageCheckin.value = image;
+        for (var image in responseCheckin) {
+          if (image.bookingImageType != 'Customer') {
+            state.listVehicleBookingImageCheckin.value.add(image);
+          } else {
+            state.customerBookingImageCheckin.value = image;
+          }
         }
-      }
 
-      for (var image in responseCheckout) {
-        if (image.bookingImageType != 'Customer') {
-          state.listVehicleBookingImageCheckout.value.add(image);
-        } else {
-          state.customerBookingImageCheckout.value = image;
+        for (var image in responseCheckout) {
+          if (image.bookingImageType != 'Customer') {
+            state.listVehicleBookingImageCheckout.value.add(image);
+          } else {
+            state.customerBookingImageCheckout.value = image;
+          }
         }
-      }
 
-      //xử lý vụ hiển thị rating
-      bool responseCheckRating =
-          await BookingAPI.checkBookingCanRating(bookingId: bookingId);
+        //xử lý vụ hiển thị rating
+        bool responseCheckRating =
+            await BookingAPI.checkBookingCanRating(bookingId: bookingId);
 
-      state.canRateBooking.value = responseCheckRating;
+        state.canRateBooking.value = responseCheckRating;
 
-      // nếu trả về true tức là có thể rating
-      //còn trả về false tức là đã có rating sẽ gọi api để get rating
-      if (!responseCheckRating) {
-        state.ratingData.value =
-            await BookingAPI.getRatingByBookingId(bookingId: bookingId);
+        // nếu trả về true tức là có thể rating
+        //còn trả về false tức là đã có rating sẽ gọi api để get rating
+        if (!responseCheckRating) {
+          state.ratingData.value =
+              await BookingAPI.getRatingByBookingId(bookingId: bookingId);
 
-        state.ratingDataId.value = state.ratingData.value.id ?? '';
+          state.ratingDataId.value = state.ratingData.value.id ?? '';
+        }
       }
 
       //lấy booking cancel
-      var resBookingCancel =
-          await BookingAPI.getBookingCancelByBookingId(bookingId: bookingId);
-      print('resBookingCancel: ${resBookingCancel}');
+      if (bookingHistoryItem.status == "Cancel") {
+        var resBookingCancel =
+            await BookingAPI.getBookingCancelByBookingId(bookingId: bookingId);
 
-      state.bookingCancelData.value = resBookingCancel;
+        state.bookingCancelData.value = resBookingCancel;
+      }
     } catch (e) {
-      print('Error fetching booking image: $e');
-      // Get.snackbar('Error fetching booking image:', '$e');
+      print('Error fetching booking detail: $e');
     } finally {
       EasyLoading.dismiss();
     }

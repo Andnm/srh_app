@@ -11,8 +11,9 @@ class User {
   String? dob;
   bool? isPublicGender;
   bool? isActive;
+  String? role;
 
-   User({
+  User({
     this.id,
     this.name = '',
     this.phoneNumber = '',
@@ -25,6 +26,7 @@ class User {
     this.dob = '',
     this.isPublicGender = true,
     this.isActive = true,
+    this.role = '',
   });
 
   User.fromJson(Map<String, dynamic> json) {
@@ -41,6 +43,7 @@ class User {
     dob = json['dob'] ?? '';
     isPublicGender = json['isPublicGender'] ?? true;
     isActive = json['isActive'] ?? true;
+    role = json['role'] ?? '';
   }
 
   Map<String, dynamic> toJson() {
@@ -57,11 +60,12 @@ class User {
     data['dob'] = this.dob;
     data['isPublicGender'] = this.isPublicGender;
     data['isActive'] = this.isActive;
+    data['role'] = this.role;
     return data;
   }
 
   @override
   String toString() {
-    return 'User{id: $id, name: $name, phoneNumber: $phoneNumber, userName: $userName, email: $email, address: $address, star: $star, avatar: $avatar, gender: $gender, dob: $dob, isPublicGender: $isPublicGender, isActive: $isActive}';
+    return 'User{id: $id, name: $name, phoneNumber: $phoneNumber, userName: $userName, email: $email, address: $address, star: $star, avatar: $avatar, gender: $gender, dob: $dob, isPublicGender: $isPublicGender, isActive: $isActive, role: $role}';
   }
 }

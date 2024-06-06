@@ -95,7 +95,8 @@ class BookingHistoryPage extends GetView<BookingHistoryController> {
         Get.to(BookingHistoryDetail(history: bookingHistoryItem));
         //lấy tất cả dữ liệu liên quan đến booking image
         //bao gồm cả rating
-        controller.fetchAllBookingImageFromApi(bookingHistoryItem.id ?? '');
+        controller.fetchAllBookingImageFromApi(
+            bookingHistoryItem.id ?? '', bookingHistoryItem);
       },
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 7, horizontal: 10),

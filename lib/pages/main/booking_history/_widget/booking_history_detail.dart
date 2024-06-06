@@ -459,8 +459,36 @@ class BookingHistoryDetail extends GetView<BookingHistoryController> {
                                           ),
                                         ),
                                         TextSpan(
-                                          text:
-                                              "asd",
+                                          text: controller
+                                              .state
+                                              .bookingCancelData
+                                              .value
+                                              .cancelReason,
+                                          style: TextStyle(
+                                            fontSize: 15,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Text.rich(
+                                    TextSpan(
+                                      children: [
+                                        TextSpan(
+                                          text: 'Thời gian hủy chuyến: ',
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.grey.shade600,
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text: controller
+                                              .convertDateTimeString(controller
+                                                      .state
+                                                      .bookingCancelData
+                                                      .value
+                                                      .dateCreated ??
+                                                  ''),
                                           style: TextStyle(
                                             fontSize: 15,
                                           ),
@@ -479,8 +507,33 @@ class BookingHistoryDetail extends GetView<BookingHistoryController> {
                                           ),
                                         ),
                                         TextSpan(
-                                          text:
-                                              "asdasd2435465768767645344wetrhfgdf",
+                                          text: () {
+                                            final role = controller
+                                                .state
+                                                .bookingCancelData
+                                                .value
+                                                .cancelPerson!
+                                                .role;
+                                            final name = controller
+                                                .state
+                                                .bookingCancelData
+                                                .value
+                                                .cancelPerson!
+                                                .name;
+
+                                            if (role == "Customer") {
+                                              return 'Khách hàng';
+                                            } else if (role == "Driver") {
+                                              return 'Tài xế';
+                                            } else if (role == "Staff") {
+                                              final staffName = name != null
+                                                  ? 'Nhân viên $name'
+                                                  : 'Nhân viên';
+                                              return staffName;
+                                            } else {
+                                              return ''; // Trường hợp khác nếu có
+                                            }
+                                          }(),
                                           style: TextStyle(
                                             fontSize: 15,
                                           ),

@@ -63,7 +63,7 @@ class BookingAPI {
 
   static Future<BookingCancelModel> getBookingCancelByBookingId(
       {required String bookingId}) async {
-    var response = await HttpUtil().get('');
+    var response = await HttpUtil().get('/api/BookingCancel/$bookingId');
     return BookingCancelModel.fromJson(response);
   }
 }
