@@ -45,13 +45,6 @@ class MapController extends GetxController {
   Future<void> onInit() async {
     super.onInit();
     // Test sự kiện 'newNotify'
-    await getCurrentLocation(() async {
-      if (AppRoles.isDriver) {
-        await initDataDriver();
-      } else {
-        initDataCustomer();
-      }
-    });
     // await makeIconsCustoms();
 
     SystemChrome.setPreferredOrientations(
