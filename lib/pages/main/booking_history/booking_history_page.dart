@@ -12,6 +12,7 @@ import 'package:get/get.dart';
 class BookingHistoryPage extends GetView<BookingHistoryController> {
   @override
   Widget build(BuildContext context) {
+    controller.state.data.value = [];
     controller.fetchBookingHistoryByPageIndex(1);
 
     return Obx(

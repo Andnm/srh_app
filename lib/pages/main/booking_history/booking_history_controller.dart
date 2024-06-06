@@ -244,8 +244,8 @@ class BookingHistoryController extends GetxController {
 
   @override
   void onClose() {
-    pagingController.dispose();
     state.data.value = [];
+    pagingController.dispose();
     super.onClose();
   }
 }
