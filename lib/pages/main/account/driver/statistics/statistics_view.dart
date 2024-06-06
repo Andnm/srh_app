@@ -411,7 +411,7 @@ class StatisticsPage extends GetView<StatisticsController> {
                     style: TextStyle(
                       color: AppColors.primaryText,
                       fontWeight: FontWeight.bold,
-                      fontSize: 12.sp,
+                      fontSize: 13.sp,
                     ),
                   ),
                 ],
@@ -452,14 +452,14 @@ class StatisticsPage extends GetView<StatisticsController> {
               'Tổng số chuyến: $totalTrip',
               style: TextStyle(
                 color: AppColors.primaryText.withOpacity(0.8),
-                fontSize: 14.sp,
+                fontSize: 12.sp,
               ),
             ),
             Text(
               'Hoàn thành: $totalTripCompleted ',
               style: TextStyle(
                 color: AppColors.primaryText.withOpacity(0.8),
-                fontSize: 14.sp,
+                fontSize: 12.sp,
               ),
             ),
           ],
@@ -472,14 +472,14 @@ class StatisticsPage extends GetView<StatisticsController> {
               'Tổng thời gian hoạt động: ',
               style: TextStyle(
                 color: AppColors.primaryText.withOpacity(0.8),
-                fontSize: 14.sp,
+                fontSize: 12.sp,
               ),
             ),
             Text(
               totalOperatingTime,
               style: TextStyle(
                 color: AppColors.primaryText.withOpacity(0.8),
-                fontSize: 14.sp,
+                fontSize: 12.sp,
               ),
             ),
           ],
