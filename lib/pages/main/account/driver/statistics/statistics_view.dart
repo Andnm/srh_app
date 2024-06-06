@@ -57,8 +57,6 @@ class StatisticsPage extends GetView<StatisticsController> {
                 (controller.getDriverStatisticDayly ?? []).isEmpty
                     ? Expanded(
                         child: Container(
-                          decoration: BoxDecoration(
-                              color: AppColors.primaryText.withOpacity(0.05)),
                           child: Center(
                             child: Text(
                               "Không có chuyến",
@@ -121,7 +119,7 @@ class StatisticsPage extends GetView<StatisticsController> {
               child: Container(
                 padding: EdgeInsets.all(5.w),
                 decoration: BoxDecoration(
-                  color: AppColors.acceptColor,
+                  color: Color(0xFFFFC72C),
                   borderRadius: BorderRadius.circular(10.r),
                 ),
                 child: Column(
@@ -152,7 +150,7 @@ class StatisticsPage extends GetView<StatisticsController> {
               child: Container(
                 padding: EdgeInsets.all(5.w),
                 decoration: BoxDecoration(
-                  color: AppColors.acceptColor,
+                  color: Color(0xFF007FFF),
                   borderRadius: BorderRadius.circular(10.r),
                 ),
                 child: Column(
@@ -188,7 +186,7 @@ class StatisticsPage extends GetView<StatisticsController> {
                     ?.replaceAll('%', '') ??
                 '0') ??
             0,
-        color: AppColors.acceptColor.withOpacity(0.8),
+        color: Color(0xFF03C03C),
         radius: 60.r,
         title: controller
                 .state.yearlyDriverStatistics.value.bookingAcceptanceRate ??
@@ -234,7 +232,7 @@ class StatisticsPage extends GetView<StatisticsController> {
                     ?.replaceAll('%', '') ??
                 '0') ??
             0,
-        color: AppColors.primaryElement.withOpacity(0.8),
+        color: Color(0xFF007FFF),
         radius: 60.r,
         title: controller
                 .state.yearlyDriverStatistics.value.bookingCompletionRate ??
@@ -296,7 +294,7 @@ class StatisticsPage extends GetView<StatisticsController> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     _buildLegendItem(
-                      AppColors.acceptColor.withOpacity(0.8),
+                      Color(0xFF03C03C),
                       "Chấp nhận",
                     ),
                     Text(controller.state.yearlyDriverStatistics.value
@@ -322,7 +320,7 @@ class StatisticsPage extends GetView<StatisticsController> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     _buildLegendItem(
-                      AppColors.primaryElement.withOpacity(0.8),
+                      Color(0xFF007FFF),
                       "Hoàn thành",
                     ),
                     Text(controller.state.yearlyDriverStatistics.value
@@ -441,10 +439,13 @@ class StatisticsPage extends GetView<StatisticsController> {
           children: [
             Expanded(
               child: Card(
+                color: AppColors.acceptColor
+                    .withOpacity(0.1), // Background color with transparency
                 child: Container(
                   padding: EdgeInsets.all(5.w),
                   decoration: BoxDecoration(
-                    color: AppColors.acceptColor,
+                    color: Color(
+                        0xFF32de84), // Solid color for the content container
                     borderRadius: BorderRadius.circular(10.r),
                   ),
                   child: Column(
@@ -453,14 +454,17 @@ class StatisticsPage extends GetView<StatisticsController> {
                       Text(
                         "Thu nhập ròng",
                         style: TextStyle(
-                            color: AppColors.surfaceWhite,
-                            fontSize: 12.sp,
-                            fontWeight: FontWeight.bold),
+                          color: AppColors
+                              .surfaceWhite, // Slightly darker text color
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       Text(
                         "${controller.formatCurrency.format(controller.state.monthlyDriverStatistics.value.totalMoney ?? 0)}",
                         style: TextStyle(
-                          color: AppColors.surfaceWhite,
+                          color: AppColors
+                              .surfaceWhite, // Slightly darker text color
                           fontWeight: FontWeight.bold,
                           fontSize: 14.sp,
                         ),
@@ -472,10 +476,13 @@ class StatisticsPage extends GetView<StatisticsController> {
             ),
             Expanded(
               child: Card(
+                color: AppColors.primaryElement
+                    .withOpacity(0.2), // Background color with transparency
                 child: Container(
                   padding: EdgeInsets.all(5.w),
                   decoration: BoxDecoration(
-                    color: AppColors.primaryElement,
+                    color: Color(
+                        0xFFFF0090), // Solid color for the content container
                     borderRadius: BorderRadius.circular(10.r),
                   ),
                   child: Column(
@@ -484,16 +491,19 @@ class StatisticsPage extends GetView<StatisticsController> {
                       Text(
                         "Tổng số giờ chạy",
                         style: TextStyle(
-                            color: AppColors.surfaceWhite,
-                            fontSize: 12.sp,
-                            fontWeight: FontWeight.bold),
+                          color: AppColors
+                              .surfaceWhite, // Slightly darker text color
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       Text(
                         controller.state.monthlyDriverStatistics.value
                                 .totalOperatingTime ??
                             "0",
                         style: TextStyle(
-                          color: AppColors.surfaceWhite,
+                          color: AppColors.surfaceWhite
+                              .withOpacity(0.9), // Slightly darker text color
                           fontWeight: FontWeight.bold,
                           fontSize: 14.sp,
                         ),
