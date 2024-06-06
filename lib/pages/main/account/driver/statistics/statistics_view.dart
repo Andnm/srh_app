@@ -15,14 +15,14 @@ class StatisticsPage extends GetView<StatisticsController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Center(
-          child: Text(
-            'Thống kê thu nhập',
-            style: TextStyle(
+        backgroundColor: AppColors.whiteColor,
+        scrolledUnderElevation: 0,
+        title: Text(
+          'Thống kê thu nhập',
+          style: TextStyle(
               fontSize: 18.sp,
               color: AppColors.primaryText,
-            ),
-          ),
+              fontWeight: FontWeight.bold),
         ),
       ),
       backgroundColor: AppColors.whiteColor,
@@ -82,9 +82,8 @@ class StatisticsPage extends GetView<StatisticsController> {
         builder: (controller) {
           final month = controller.selectedMonth.value;
           final daysInMonth = controller.daysInMonth(month);
-          return ListView.separated(
+          return ListView.builder(
             itemCount: controller.getDriverStatisticDayly?.length ?? 0,
-            separatorBuilder: (context, index) => Divider(),
             itemBuilder: (context, index) {
               final day = controller.getDriverStatisticDayly?[index]?.day ??
                   DateTime.now().day;
@@ -94,13 +93,19 @@ class StatisticsPage extends GetView<StatisticsController> {
               final formattedDate =
                   '${dayOfWeek}, ${controller.formatDate(date)}';
 
-              // Thay thế dữ liệu tĩnh bằng dữ liệu thực tế từ controller hoặc model
-              final details =
-                  '${controller.getDriverStatisticDayly?[index]?.totalTrip} | ${controller.getDriverStatisticDayly?[index]?.totalOperatiingTime}';
+              final totalTripCompleted = controller
+                      .getDriverStatisticDayly?[index]?.totalTripCompleted ??
+                  0;
+              final totalTrip =
+                  controller.getDriverStatisticDayly?[index]?.totalTrip ?? 0;
+              final totalOperatingTime = controller
+                      .getDriverStatisticDayly?[index]?.totalOperatiingTime ??
+                  '';
               final amount =
                   controller.getDriverStatisticDayly?[index]?.totalIncome ?? 0;
 
-              return _buildDayItem(formattedDate, details, amount);
+              return _buildDayItem(formattedDate, totalTripCompleted, totalTrip,
+                  totalOperatingTime, amount);
             },
           );
         },
@@ -126,7 +131,7 @@ class StatisticsPage extends GetView<StatisticsController> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      "Số chuyến",
+                      "Tổng số chuyến",
                       style: TextStyle(
                         color: AppColors.surfaceWhite,
                         fontWeight: FontWeight.bold,
@@ -179,81 +184,58 @@ class StatisticsPage extends GetView<StatisticsController> {
         ],
       );
   Widget _buildDriverStatisticsByYear() {
-    final sections = [
-      PieChartSectionData(
-        value: double.tryParse(controller
-                    .state.yearlyDriverStatistics.value.bookingAcceptanceRate
-                    ?.replaceAll('%', '') ??
-                '0') ??
-            0,
-        color: Color(0xFF03C03C),
-        radius: 60.r,
-        title: controller
-                .state.yearlyDriverStatistics.value.bookingAcceptanceRate ??
-            "",
-        titleStyle: TextStyle(
-          fontWeight: FontWeight.bold,
-          color: AppColors.whiteColor,
-        ),
-        // titlePositionPercentageOffset: 0.6.w,
-        showTitle: false,
-        borderSide: BorderSide(
-          color: AppColors.primaryText
-              .withOpacity(0.1), // Lighter border color for elevation effect
-          width: 2.w, // Width of the border
-        ),
+    final barGroups = [
+      BarChartGroupData(
+        x: 0,
+        barRods: [
+          BarChartRodData(
+            toY: double.tryParse(controller.state.yearlyDriverStatistics.value
+                        .bookingAcceptanceRate
+                        ?.replaceAll('%', '') ??
+                    '0') ??
+                0,
+            color: Color(0xFF03C03C),
+            width: 30.w,
+            borderRadius: BorderRadius.circular(5.r),
+          ),
+        ],
       ),
-      PieChartSectionData(
-        value: double.tryParse(controller
-                    .state.yearlyDriverStatistics.value.bookingCancellationRate
-                    ?.replaceAll('%', '') ??
-                '0') ??
-            0,
-        color: AppColors.errorRed.withOpacity(0.8),
-        radius: 60.r,
-        title: controller
-                .state.yearlyDriverStatistics.value.bookingCancellationRate ??
-            "",
-        titleStyle: TextStyle(
-          fontWeight: FontWeight.bold,
-          color: AppColors.whiteColor,
-        ),
-        showTitle: false,
-        // titlePositionPercentageOffset: 0.6.w,
-        borderSide: BorderSide(
-          color: AppColors.primaryText
-              .withOpacity(0.1), // Lighter border color for elevation effect
-          width: 1.w, // Width of the border
-        ),
+      BarChartGroupData(
+        x: 1,
+        barRods: [
+          BarChartRodData(
+            toY: double.tryParse(controller.state.yearlyDriverStatistics.value
+                        .bookingCancellationRate
+                        ?.replaceAll('%', '') ??
+                    '0') ??
+                0,
+            color: AppColors.errorRed.withOpacity(0.8),
+            width: 30.w,
+            borderRadius: BorderRadius.circular(5.r),
+          ),
+        ],
       ),
-      PieChartSectionData(
-        value: double.tryParse(controller
-                    .state.yearlyDriverStatistics.value.bookingCompletionRate
-                    ?.replaceAll('%', '') ??
-                '0') ??
-            0,
-        color: Color(0xFF007FFF),
-        radius: 60.r,
-        title: controller
-                .state.yearlyDriverStatistics.value.bookingCompletionRate ??
-            "",
-        titleStyle: TextStyle(
-          fontWeight: FontWeight.bold,
-          color: AppColors.whiteColor,
-        ),
-        // titlePositionPercentageOffset: 0.6.w,
-        showTitle: false,
-        borderSide: BorderSide(
-          color: AppColors.primaryText
-              .withOpacity(0.1), // Lighter border color for elevation effect
-          width: 3.w, // Width of the border
-        ),
+      BarChartGroupData(
+        x: 2,
+        barRods: [
+          BarChartRodData(
+            toY: double.tryParse(controller.state.yearlyDriverStatistics.value
+                        .bookingCompletionRate
+                        ?.replaceAll('%', '') ??
+                    '0') ??
+                0,
+            color: Color(0xFF007FFF),
+            width: 30.w,
+            borderRadius: BorderRadius.circular(5.r),
+          ),
+        ],
       ),
     ];
 
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 15.w),
-      padding: EdgeInsets.all(15.w),
+      width: 300.w,
+      height: 220.h,
+      padding: EdgeInsets.all(10.w),
       decoration: BoxDecoration(
         color: AppColors.whiteColor,
         borderRadius: BorderRadius.circular(10.r),
@@ -265,90 +247,145 @@ class StatisticsPage extends GetView<StatisticsController> {
           ),
         ],
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      child: Column(
         children: [
-          Expanded(
-            child: Container(
-              width: 100.w,
-              height: 150.h,
-              child: AspectRatio(
-                aspectRatio: 1,
-                child: PieChart(
-                  PieChartData(
-                    sections: sections,
-                    centerSpaceRadius: 2.r,
-                    sectionsSpace: 0,
+          AspectRatio(
+            aspectRatio: 2,
+            child: BarChart(
+              BarChartData(
+                alignment: BarChartAlignment.spaceEvenly,
+                maxY: 100,
+                barTouchData: BarTouchData(enabled: false),
+                titlesData: FlTitlesData(
+                  show: true,
+                  topTitles: AxisTitles(
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
+                  rightTitles: AxisTitles(
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
+                  leftTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      reservedSize: 30,
+                      interval: 20,
+                      getTitlesWidget: (value, meta) {
+                        return Text(
+                          value.toInt().toString(),
+                          style: TextStyle(
+                            color: AppColors.primaryText,
+                            fontSize: 10.sp,
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  bottomTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      getTitlesWidget: (double value, TitleMeta meta) {
+                        switch (value.toInt()) {
+                          case 0:
+                            return Text(
+                              controller.state.yearlyDriverStatistics.value
+                                      .bookingAcceptanceRate ??
+                                  '',
+                              style: TextStyle(
+                                color: AppColors.primaryText,
+                                fontSize: 10.sp,
+                              ),
+                            );
+                          case 1:
+                            return Text(
+                              controller.state.yearlyDriverStatistics.value
+                                      .bookingCancellationRate ??
+                                  '',
+                              style: TextStyle(
+                                color: AppColors.primaryText,
+                                fontSize: 10.sp,
+                              ),
+                            );
+                          case 2:
+                            return Text(
+                              controller.state.yearlyDriverStatistics.value
+                                      .bookingCompletionRate ??
+                                  '',
+                              style: TextStyle(
+                                color: AppColors.primaryText,
+                                fontSize: 10.sp,
+                              ),
+                            );
+                          default:
+                            return Text('');
+                        }
+                      },
+                      reservedSize: 30,
+                    ),
                   ),
                 ),
+                gridData: FlGridData(
+                  show: true,
+                  drawVerticalLine: false,
+                  getDrawingHorizontalLine: (value) {
+                    return FlLine(
+                      color: AppColors.primaryText.withOpacity(0.1),
+                      strokeWidth: 1,
+                    );
+                  },
+                ),
+                borderData: FlBorderData(show: false),
+                barGroups: barGroups,
               ),
             ),
           ),
-          SizedBox(width: 20.w),
-          Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _buildLegendItem(
-                      Color(0xFF03C03C),
-                      "Chấp nhận",
-                    ),
-                    Text(controller.state.yearlyDriverStatistics.value
-                            .bookingAcceptanceRate ??
-                        "")
-                  ],
-                ),
-                SizedBox(height: 5.h),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _buildLegendItem(
-                      AppColors.errorRed.withOpacity(0.8),
-                      "Hủy chuyến",
-                    ),
-                    Text(controller.state.yearlyDriverStatistics.value
-                            .bookingCancellationRate ??
-                        "")
-                  ],
-                ),
-                SizedBox(height: 5.h),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _buildLegendItem(
-                      Color(0xFF007FFF),
-                      "Hoàn thành",
-                    ),
-                    Text(controller.state.yearlyDriverStatistics.value
-                            .bookingCompletionRate ??
-                        "")
-                  ],
-                ),
-              ],
-            ),
+          SizedBox(height: 10.h),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              _buildLegendItem(
+                Color(0xFF03C03C),
+                'Chấp nhận',
+                controller.state.yearlyDriverStatistics.value
+                        .bookingAcceptanceRate ??
+                    '',
+              ),
+              _buildLegendItem(
+                AppColors.errorRed.withOpacity(0.8),
+                'Hủy',
+                controller.state.yearlyDriverStatistics.value
+                        .bookingCancellationRate ??
+                    '',
+              ),
+              _buildLegendItem(
+                Color(0xFF007FFF),
+                'Hoàn thành',
+                controller.state.yearlyDriverStatistics.value
+                        .bookingCompletionRate ??
+                    '',
+              ),
+            ],
           ),
         ],
       ),
     );
   }
 
-  Widget _buildLegendItem(Color color, String title) {
+  Widget _buildLegendItem(Color color, String title, String value) {
     return Row(
       children: [
         Container(
-          width: 20.w,
-          height: 20.h,
-          color: color,
+          width: 10.w,
+          height: 10.h,
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(2.r),
+          ),
         ),
-        SizedBox(width: 10.w),
+        SizedBox(width: 4.w),
         Text(
           title,
           style: TextStyle(
-            fontSize: 14.sp,
+            fontSize: 10.sp,
             color: AppColors.primaryText,
           ),
         ),
@@ -356,41 +393,98 @@ class StatisticsPage extends GetView<StatisticsController> {
     );
   }
 
-  Widget _buildDayItem(String date, String details, int amount) {
-    return Container(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+  Widget _buildDayItem(String date, int totalTripCompleted, int totalTrip,
+      String totalOperatingTime, int amount) {
+    return Card(
+      color: AppColors.surfaceWhite,
+      child: Theme(
+        data: ThemeData().copyWith(dividerColor: Colors.transparent),
+        child: ExpansionTile(
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                date,
-                style: TextStyle(
-                  color: AppColors.primaryText,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16.sp,
-                ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    date,
+                    style: TextStyle(
+                      color: AppColors.primaryText,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12.sp,
+                    ),
+                  ),
+                ],
               ),
-              Text(
-                details,
-                style: TextStyle(
-                  color: AppColors.primaryText.withOpacity(0.8),
-                  fontSize: 14.sp,
+              Flexible(
+                child: Text(
+                  controller.formatCurrency.format(amount),
+                  style: TextStyle(
+                    color: AppColors.acceptColor,
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ],
           ),
-          Text(
-            controller.formatCurrency.format(amount),
-            style: TextStyle(
-              color: AppColors.acceptColor,
-              fontSize: 18.sp,
-              fontWeight: FontWeight.bold,
+          children: [
+            Container(
+              padding: EdgeInsets.all(16.0.w),
+              child: _buildDetails(
+                  totalTripCompleted, totalTrip, totalOperatingTime),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
+    );
+  }
+
+  Widget _buildDetails(
+      int totalTripCompleted, int totalTrip, String totalOperatingTime) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Tổng số chuyến: $totalTrip',
+              style: TextStyle(
+                color: AppColors.primaryText.withOpacity(0.8),
+                fontSize: 14.sp,
+              ),
+            ),
+            Text(
+              'Hoàn thành: $totalTripCompleted ',
+              style: TextStyle(
+                color: AppColors.primaryText.withOpacity(0.8),
+                fontSize: 14.sp,
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: 10.h),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Text(
+              'Tổng thời gian hoạt động: ',
+              style: TextStyle(
+                color: AppColors.primaryText.withOpacity(0.8),
+                fontSize: 14.sp,
+              ),
+            ),
+            Text(
+              totalOperatingTime,
+              style: TextStyle(
+                color: AppColors.primaryText.withOpacity(0.8),
+                fontSize: 14.sp,
+              ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 
@@ -502,8 +596,8 @@ class StatisticsPage extends GetView<StatisticsController> {
                                 .totalOperatingTime ??
                             "0",
                         style: TextStyle(
-                          color: AppColors.surfaceWhite
-                              .withOpacity(0.9), // Slightly darker text color
+                          color: AppColors
+                              .surfaceWhite, // Slightly darker text color
                           fontWeight: FontWeight.bold,
                           fontSize: 14.sp,
                         ),

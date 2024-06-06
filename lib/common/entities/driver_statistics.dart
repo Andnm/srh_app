@@ -86,15 +86,21 @@ class DriverStatisticDayly {
   int? day;
   int? totalTrip;
   int? totalIncome;
+  int? totalTripCompleted;
   String? totalOperatiingTime;
 
   DriverStatisticDayly(
-      {this.day, this.totalTrip, this.totalIncome, this.totalOperatiingTime});
+      {this.day,
+      this.totalTrip,
+      this.totalIncome,
+      this.totalOperatiingTime,
+      this.totalTripCompleted});
 
   DriverStatisticDayly.fromJson(Map<String, dynamic> json) {
     day = json['day'];
     totalTrip = json['totalTrip'];
     totalIncome = json['totalIncome'];
+    totalTripCompleted = json['totalTripCompleted'];
     totalOperatiingTime = json['totalOperatiingTime'];
   }
 
@@ -103,12 +109,13 @@ class DriverStatisticDayly {
     data['day'] = this.day;
     data['totalTrip'] = this.totalTrip;
     data['totalIncome'] = this.totalIncome;
+    data['totalTripCompleted'] = this.totalTripCompleted;
     data['totalOperatiingTime'] = this.totalOperatiingTime;
     return data;
   }
 
   @override
   String toString() {
-    return 'DriverStatisticDayly{day: $day, totalTrip: $totalTrip, totalIncome: $totalIncome, totalOperatiingTime: $totalOperatiingTime}';
+    return 'DriverStatisticDayly{day: $day, totalTrip: $totalTrip, totalIncome: $totalIncome, totalTripCompleted: $totalTripCompleted, totalOperatiingTime: $totalOperatiingTime}';
   }
 }
