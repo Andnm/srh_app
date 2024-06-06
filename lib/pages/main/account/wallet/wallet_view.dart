@@ -16,6 +16,7 @@ class WalletPage extends GetView<WalletController> {
 
   @override
   Widget build(BuildContext context) {
+    controller.handleInitialProcessingUserWallet();
     return Obx(
       () => Scaffold(
         appBar: AppBar(

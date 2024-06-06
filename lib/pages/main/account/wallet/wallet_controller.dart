@@ -27,6 +27,9 @@ class WalletController extends GetxController with WidgetsBindingObserver {
   @override
   void onInit() async {
     super.onInit();
+  }
+
+  Future<void> handleInitialProcessingUserWallet() async {
     if (await checkExistUserWallet()) {
       await fetchWalletInfoFromApi();
     } else {
@@ -212,12 +215,19 @@ class WalletController extends GetxController with WidgetsBindingObserver {
       return false;
     } else {
       //kiểm tra nếu như số tiền muốn rút lớn hơn số tiền hiện đang có trong SecureWallet
-
-      if (convertAmountFromStringToNum(amountController.text.trim())! >
+      num? amount = convertAmountFromStringToNum(amountController.text.trim());
+      
+      if (amount! >
           state.currentMoney.value) {
         _linkedAccountController.state.errorLinkedAccount.value = state
                 .errorFormatAmount.value =
             'Vui lòng nhập số tiền muốn rút phải nhỏ hơn hoặc bằng số tiền hiện có trong ví';
+        return false;
+      }
+
+      if (amount! < 100000 || amount > 10000000) {
+        state.errorFormatAmount.value =
+            'Số tiền rút tối thiểu 100.000đ và tối đa là 10.000.000đ';
         return false;
       }
     }

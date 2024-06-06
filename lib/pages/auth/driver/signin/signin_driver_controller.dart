@@ -73,7 +73,7 @@ class DriverSignInController extends GetxController {
             userName: result.userName,
             phoneNumber: result.phoneNumber,
             email: result.email,
-            name: result.userName,
+            name: result.name,
             avatar: result.avatar,
             priority: result.priority,
             roles: result.roles,
