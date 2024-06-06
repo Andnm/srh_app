@@ -32,14 +32,9 @@ class StatisticsPage extends GetView<StatisticsController> {
             padding: EdgeInsets.all(5.0.w),
             child: Column(
               children: [
-                _buildTotalMoneyWidget(),
-                SizedBox(height: 20.h),
                 // Thay thế Expanded bằng Row chứa hai Dropdown
                 Row(
                   children: [
-                    Expanded(
-                      child: _selectedMonthWidget(),
-                    ),
                     SizedBox(width: 10.w),
                     Expanded(
                       child: _selectedYearWidget(),
@@ -48,43 +43,21 @@ class StatisticsPage extends GetView<StatisticsController> {
                 ),
 
                 SizedBox(height: 20.h),
-                controller.isWork
-                    ? _buildDriverStatisticsByYear()
-                    : SizedBox.shrink(),
+
+                _buildDriverStatisticsByYear(),
+
                 SizedBox(height: 20.h),
-                //half
                 Row(
                   children: [
+                    SizedBox(width: 10.w),
                     Expanded(
-                        child: Column(
-                      children: [
-                        Container(
-                          child: Text(
-                            "${controller.state.monthlyDriverStatistics.value.totalTrips} Chuyến"
-                                .toUpperCase(),
-                            style: TextStyle(
-                                color: AppColors.primaryText,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20.sp),
-                          ),
-                        ),
-                      ],
-                    )),
-                    Expanded(
-                        child: Column(children: [
-                      Container(
-                        child: Text(
-                          "${controller.state.monthlyDriverStatistics.value.totalTripsCompleted} Hoàn thành"
-                              .toUpperCase(),
-                          style: TextStyle(
-                              color: AppColors.primaryText,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20.sp),
-                        ),
-                      ),
-                    ]))
+                      child: _selectedMonthWidget(),
+                    ),
                   ],
                 ),
+                _buildTotalMoneyWidget(),
+                SizedBox(height: 20.h),
+                _buildTotalTripAndCompletedTrip(),
                 SizedBox(height: 16.h),
                 Expanded(
                   child: GetBuilder<StatisticsController>(
@@ -144,6 +117,74 @@ class StatisticsPage extends GetView<StatisticsController> {
     );
   }
 
+  Widget _buildTotalTripAndCompletedTrip() => Row(
+        children: [
+          Expanded(
+            child: Card(
+              child: Container(
+                padding: EdgeInsets.all(5.w),
+                decoration: BoxDecoration(
+                  color: AppColors.acceptColor,
+                  borderRadius: BorderRadius.circular(10.r),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Số chuyến",
+                      style: TextStyle(
+                        color: AppColors.surfaceWhite,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16.sp,
+                      ),
+                    ),
+                    SizedBox(height: 5.h),
+                    Text(
+                      "${controller.state.monthlyDriverStatistics.value.totalTrips}",
+                      style: TextStyle(
+                          color: AppColors.surfaceWhite,
+                          fontSize: 20.sp,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: Card(
+              child: Container(
+                padding: EdgeInsets.all(5.w),
+                decoration: BoxDecoration(
+                  color: AppColors.acceptColor,
+                  borderRadius: BorderRadius.circular(10.r),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Hoàn thành",
+                      style: TextStyle(
+                        color: AppColors.surfaceWhite,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16.sp,
+                      ),
+                    ),
+                    SizedBox(height: 5.h),
+                    Text(
+                      "${controller.state.monthlyDriverStatistics.value.totalTripsCompleted} ",
+                      style: TextStyle(
+                          color: AppColors.surfaceWhite,
+                          fontSize: 20.sp,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      );
   Widget _buildDriverStatisticsByYear() {
     final sections = [
       PieChartSectionData(
@@ -225,7 +266,7 @@ class StatisticsPage extends GetView<StatisticsController> {
         borderRadius: BorderRadius.circular(10.r),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primaryElement.withOpacity(0.1),
+            color: AppColors.primaryText.withOpacity(0.1),
             blurRadius: 10,
             offset: Offset(0, 5),
           ),
