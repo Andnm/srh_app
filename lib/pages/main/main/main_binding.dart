@@ -10,8 +10,8 @@ import 'index.dart';
 class MainBinding implements Bindings {
   @override
   void dependencies() {
-    Get.put<HomeController>(HomeController());
     Get.put<MapController>(MapController());
+    Get.put<HomeController>(HomeController());
 
     Get.lazyPut<MainController>(() => MainController());
   }

@@ -10,8 +10,9 @@ import '../main_controller.dart';
 class MainCustomerBinding implements Bindings {
   @override
   void dependencies() async {
-    Get.put<MapController>(MapController());
+    // Get.put<MapController>(MapController());
     Get.put<HomeController>(HomeController());
+    // Get.lazyPut<MapController>(() => MapController());
     Get.put<MainController>(MainController());
   }
 }

@@ -92,23 +92,23 @@ class HomeController extends GetxController {
   final Map<String, String> imageTypeMap = {
     "Ảnh khách hàng": "Customer",
     "Mặt trước xe": "Front",
+    "Mặt phải xe": "Right",
     "Mặt sau xe": "Behind",
     "Mặt trái xe": "Left",
-    "Mặt phải xe": "Right",
   };
   final List<String> imageTypes = [
     "Ảnh khách hàng",
     "Mặt trước xe",
+    "Mặt phải xe",
     "Mặt sau xe",
     "Mặt trái xe",
-    "Mặt phải xe",
   ];
   final List<String> noteTypes = [
-    "Khách hàng",
+    "Ảnh khách hàng",
     "Mặt trước xe",
+    "Mặt phải xe",
     "Mặt sau xe",
     "Mặt trái xe",
-    "Mặt phải xe",
   ];
 
   RxString notes = "".obs;

@@ -8,9 +8,8 @@ import 'package:get/get.dart';
 class HomeBinding implements Bindings {
   @override
   void dependencies() async {
-    Get.put<MapController>(MapController());
+    Get.lazyPut<MapController>(() => MapController());
     Get.put<HomeController>(HomeController());
-
     Get.lazyPut<WalletController>(() => WalletController());
   }
 }

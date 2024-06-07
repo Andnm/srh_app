@@ -52,7 +52,7 @@ class MapController extends GetxController {
       if (AppRoles.isDriver) {
         await initDataDriver();
       } else {
-        initDataCustomer();
+        await initDataCustomer();
       }
     });
 
@@ -96,7 +96,7 @@ class MapController extends GetxController {
     }
   }
 
-  void initDataCustomer() async {
+  Future<void> initDataCustomer() async {
     await homeController.initCustomer(state.currentLocation.value);
     if (homeController.isFromTerminated) {
       if (!homeController.isNotCompleteBookingResult) {
@@ -146,8 +146,9 @@ class MapController extends GetxController {
         print('Current location: ' + state.currentLocation.value.toString());
         print('lat ${state.currentLocation.value.latitude}');
         print('long ${state.currentLocation.value.longitude}');
-        var temp = await convertGeoGraphicCoOrdinatesIntoHumanReadableAddress(
-            state.currentLocation.value); // chi co cus
+        // await homeController.initCustomer(state.currentLocation.value);
+        // var temp = await convertGeoGraphicCoOrdinatesIntoHumanReadableAddress(
+        //     state.currentLocation.value); // chi co cus
         callbackSuccess(); //await
       },
     );
