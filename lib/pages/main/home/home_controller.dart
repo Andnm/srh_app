@@ -1820,6 +1820,7 @@ class HomeController extends GetxController {
                 emergencyInfo: emergencyInfo,
               );
               await callPhoneNumber("113");
+              Get.back();
             },
             child: const Text(
               'GỌI 113',
@@ -1828,6 +1829,7 @@ class HomeController extends GetxController {
           ),
           CupertinoActionSheetAction(
             onPressed: () {
+              Get.back();
               Get.dialog(CustomAlertDialog(
                 buttonText: "Gửi",
                 title: "Gửi khẩn cấp",
@@ -1846,7 +1848,13 @@ class HomeController extends GetxController {
                   emergencyNoteController.clear();
 
                   Get.back();
-                  Get.back();
+                  Get.snackbar(
+                    'Bạn đã gửi báo cáo khẩn cấp ',
+                    'Chúng tôi sẽ phản hồi sớm nhất có thể',
+                    snackPosition: SnackPosition.TOP,
+                    backgroundColor: AppColors.dialogColor,
+                    colorText: AppColors.errorRed,
+                  );
                 },
                 showTextField: true,
                 backgroundColor: AppColors.errorRed,
@@ -1864,6 +1872,7 @@ class HomeController extends GetxController {
             /// the action's text color to red.
             // isDestructiveAction: true,
             onPressed: () {
+              Get.back();
               Get.dialog(CustomAlertDialog(
                 buttonText: "Gửi",
                 title: "Gửi khẩn cấp",
@@ -1883,7 +1892,13 @@ class HomeController extends GetxController {
                   emergencyNoteController.clear();
 
                   Get.back();
-                  Get.back();
+                  Get.snackbar(
+                    'Bạn đã gửi báo cáo khẩn cấp ',
+                    'Chúng tôi sẽ phản hồi sớm nhất có thể',
+                    snackPosition: SnackPosition.TOP,
+                    backgroundColor: AppColors.dialogColor,
+                    colorText: AppColors.errorRed,
+                  );
                 },
                 showTextField: true,
                 backgroundColor: AppColors.errorRed,
@@ -1921,6 +1936,7 @@ class HomeController extends GetxController {
                 emergencyInfo: emergencyInfo,
               );
               await callPhoneNumber("113");
+              Get.back();
             },
             child: const Text(
               'GỌI 113',
@@ -1933,6 +1949,7 @@ class HomeController extends GetxController {
             /// the action's text color to red.
             // isDestructiveAction: true,
             onPressed: () {
+              Get.back();
               Get.dialog(CustomAlertDialog(
                 buttonText: "Gửi",
                 title: "Gửi khẩn cấp",
@@ -1952,7 +1969,13 @@ class HomeController extends GetxController {
                   emergencyNoteController.clear();
 
                   Get.back();
-                  Get.back();
+                  Get.snackbar(
+                    'Bạn đã gửi báo cáo khẩn cấp ',
+                    'Chúng tôi sẽ phản hồi sớm nhất có thể',
+                    snackPosition: SnackPosition.TOP,
+                    backgroundColor: AppColors.dialogColor,
+                    colorText: AppColors.errorRed,
+                  );
                 },
                 showTextField: true,
                 backgroundColor: AppColors.errorRed,

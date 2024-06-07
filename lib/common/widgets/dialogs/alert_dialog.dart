@@ -54,7 +54,7 @@ class CustomAlertDialog extends StatelessWidget {
                     child: TextField(
                       controller: textController,
                       decoration: InputDecoration(
-                        hintText: 'Nhập',
+                        hintText: 'Nhập tin nhắn...',
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10.0.r),
                           borderSide: BorderSide.none,
@@ -66,6 +66,7 @@ class CustomAlertDialog extends StatelessWidget {
                           vertical: 12.0.h,
                         ),
                       ),
+                      autofocus: true,
                     ),
                   )
                 : Text(
