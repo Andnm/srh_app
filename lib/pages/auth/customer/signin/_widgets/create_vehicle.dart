@@ -1,3 +1,4 @@
+import 'package:cus_dbs_app/common/entities/car_model.dart';
 import 'package:cus_dbs_app/common/methods/common_methods.dart';
 import 'package:cus_dbs_app/common/widgets/custom_text_field.dart';
 import 'package:cus_dbs_app/pages/auth/customer/register/index.dart';
@@ -394,17 +395,27 @@ class CreateNewVehicle extends StatelessWidget {
                   prefixIcon: Icons.language,
                   controller: _vehicleController.brandController,
                   inputType: TextInputType.text,
-                  readOnlyStatus: false,
+                  readOnlyStatus: true,
+                  onTap: () async {
+                    await _vehicleController.fetchAllBrandOfCarFromApi();
+                    showBrandOfCarList(context);
+                  },
                 ),
 
-                // model
+                //model
                 SizedBox(height: 20),
                 CustomTextField(
                   labelText: "Loại xe",
                   prefixIcon: Icons.home,
                   controller: _vehicleController.modelController,
                   inputType: TextInputType.text,
-                  readOnlyStatus: false,
+                  readOnlyStatus: true,
+                  onTap: () async {
+                    if (_vehicleController.checkBrandValueExisted()) {
+                      await _vehicleController.fetchAllModelOfBrandFromApi();
+                      showModelOfBrandList(context);
+                    }
+                  },
                 ),
 
                 // màu xe color
@@ -531,6 +542,190 @@ class CreateNewVehicle extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+
+  //chọn nhãn hiệu xe
+  void showBrandOfCarList(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return BottomSheet(
+          onClosing: () {},
+          builder: (BuildContext context) {
+            return Container(
+              padding: EdgeInsets.all(20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Container(
+                    padding: EdgeInsets.only(bottom: 20),
+                    child: Text(
+                      'Chọn nhãn hiệu xe',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: _vehicleController.state.dataBrands.value
+                            .map((brand) => Column(
+                                  children: [
+                                    _buildSelectedBrandOption(
+                                      context,
+                                      brand,
+                                    )
+                                  ],
+                                ))
+                            .toList(),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildSelectedBrandOption(
+    BuildContext context,
+    BrandEntity brand,
+  ) {
+    return Obx(
+      () => InkWell(
+        onTap: () {
+          _vehicleController.changeBrandSelection(brand);
+          Navigator.of(context).pop();
+        },
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 15),
+          child: Row(
+            children: [
+              Image.asset(
+                _vehicleController.getBrandLogoPath(brand.brandName ?? ""),
+                height: 30,
+                width: 30,
+              ),
+              SizedBox(width: 15),
+              Expanded(
+                child: Text(
+                  brand.brandName ?? 'Không xác định',
+                  style: TextStyle(fontSize: 16),
+                ),
+              ),
+              Spacer(),
+              if (_vehicleController.state.selectedBrand.value ==
+                  brand.brandName)
+                Icon(
+                  Icons.check,
+                  color: Colors.blue.shade400,
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  //Chọn loại xe ứng với nhãn hiệu
+  void showModelOfBrandList(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return BottomSheet(
+          onClosing: () {},
+          builder: (BuildContext context) {
+            return Container(
+              padding: EdgeInsets.all(20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Container(
+                    padding: EdgeInsets.only(bottom: 20),
+                    child: Text(
+                      'Chọn loại xe',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: _vehicleController.state.dataModels.value
+                            .map(
+                              (model) => Column(
+                                children: [
+                                  _buildSelectedModelOption(
+                                    context,
+                                    model.modelName ?? "",
+                                  )
+                                ],
+                              ),
+                            )
+                            .toList(),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildSelectedModelOption(
+    BuildContext context,
+    String modelName,
+  ) {
+    return Obx(
+      () => InkWell(
+        onTap: () {
+          _vehicleController.changeModelSelection(modelName);
+          Navigator.of(context).pop();
+        },
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 15),
+          child: Row(
+            children: [
+              // Image.asset(
+              //   'assets/icons/vnpay.png',
+              //   height: 25,
+              //   width: 25,
+              //   fit: BoxFit.cover,
+              // ),
+              SizedBox(width: 15),
+              Expanded(
+                child: Text(
+                  modelName,
+                  style: TextStyle(fontSize: 16),
+                ),
+              ),
+              Spacer(),
+              if (_vehicleController.state.selectedModel.value == modelName)
+                Icon(
+                  Icons.check,
+                  color: Colors.blue.shade400,
+                ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

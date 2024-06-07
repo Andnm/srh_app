@@ -444,7 +444,8 @@ class BookingHistoryDetail extends GetView<BookingHistoryController> {
                               ],
                             ),
 
-                            if (true)
+                            //bắt điều kiện booking cancel
+                            if (history.status == "Cancel")
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [

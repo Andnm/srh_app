@@ -236,7 +236,7 @@ class CustomerSignInController extends GetxController {
       EasyLoading.dismiss();
     } catch (e) {
       print('error when check exist $e');
-      Get.snackbar('Error', 'Something went wrong. Try again');
+      // Get.snackbar('Error', 'Something went wrong. Try again');
       EasyLoading.dismiss();
     }
   }
@@ -335,7 +335,8 @@ class CustomerSignInController extends GetxController {
         //
       }
     } on DioException catch (e) {
-      Get.snackbar("Error", e.response.toString());
+      // Get.snackbar("Error", e.response.toString());
+      print("error external login: ${e.response.toString()}");
       EasyLoading.dismiss();
     }
   }
