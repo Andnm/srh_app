@@ -17,5 +17,6 @@ class CustomerSignInBinding implements Bindings {
 
     Get.put<CustomerUpdateIdentityController>(
         CustomerUpdateIdentityController());
+    Get.put<VehicleController>(VehicleController());
   }
 }

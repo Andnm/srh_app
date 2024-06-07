@@ -46,9 +46,7 @@ class MapController extends GetxController {
     super.onInit();
     // Test sự kiện 'newNotify'
     // await makeIconsCustoms();
-    if (!homeController.isDriver) {
-      await homeController.checkIsFromTerminated();
-    }
+
     await getCurrentLocation(() async {
       if (AppRoles.isDriver) {
         await initDataDriver();
@@ -98,7 +96,7 @@ class MapController extends GetxController {
   }
 
   void initDataCustomer() async {
-    homeController.initCustomer(state.currentLocation.value);
+    await homeController.initCustomer(state.currentLocation.value);
     if (homeController.isFromTerminated) {
       if (!homeController.isNotCompleteBookingResult) {
         await handleTerminatedAppData();
@@ -146,12 +144,12 @@ class MapController extends GetxController {
         state.currentLocation.value = location;
         await updateCurrentCameraPosition();
 
-        callbackSuccess();
         print('Current location: ' + state.currentLocation.value.toString());
         print('lat ${state.currentLocation.value.latitude}');
         print('long ${state.currentLocation.value.longitude}');
         var temp = await convertGeoGraphicCoOrdinatesIntoHumanReadableAddress(
             state.currentLocation.value); // chi co cus
+        callbackSuccess(); //await
       },
     );
 
@@ -180,7 +178,7 @@ class MapController extends GetxController {
                   state.currentLocation.value);
           callbackSuccess();
         } else {
-          homeController.initCustomer(state.currentLocation.value);
+          await homeController.initCustomer(state.currentLocation.value);
         }
       }
     });
@@ -772,8 +770,8 @@ class MapController extends GetxController {
 
   @override
   void onClose() {
-    mapCompletePageController = Completer();
-    controllerOfGoogleMap?.dispose();
+    // mapCompletePageController = Completer();
+    // controllerOfGoogleMap?.dispose();
     super.onClose();
   }
 }

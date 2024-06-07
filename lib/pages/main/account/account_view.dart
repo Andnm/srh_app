@@ -138,22 +138,22 @@ class AccountPage extends GetView<AccountController> {
               showConfirmLogoutDialog();
             },
           ),
-          ElevatedButton(
-            onPressed: () {
-              Get.toNamed(AppRoutes.chat, parameters: {
-                "messageTo": "8550b5e3-3320-4643-9b45-4ecc9c65d22a"
-              });
-            },
-            child: const Text('Customer1'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Get.toNamed(AppRoutes.chat, parameters: {
-                "messageTo": "399afea5-a212-4089-9100-70fae14387d4"
-              });
-            },
-            child: const Text('Driver1'),
-          ),
+          // ElevatedButton(
+          //   onPressed: () {
+          //     Get.toNamed(AppRoutes.chat, parameters: {
+          //       "messageTo": "8550b5e3-3320-4643-9b45-4ecc9c65d22a"
+          //     });
+          //   },
+          //   child: const Text('Customer1'),
+          // ),
+          // ElevatedButton(
+          //   onPressed: () {
+          //     Get.toNamed(AppRoutes.chat, parameters: {
+          //       "messageTo": "399afea5-a212-4089-9100-70fae14387d4"
+          //     });
+          //   },
+          //   child: const Text('Driver1'),
+          // ),
         ],
       ),
     );

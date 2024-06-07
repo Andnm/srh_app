@@ -159,7 +159,7 @@ class CustomerSignInController extends GetxController {
           final phoneNumber = UserStore.to.customerProfile.phoneNumber;
 
           if (phoneNumber == '' || phoneNumber == null) {
-            Get.offAllNamed(AppRoutes.createInfoAfterLoginWithEmailPassword);
+            Get.toNamed(AppRoutes.createInfoAfterLoginWithEmailPassword);
           } else {
             CommonMethods.checkRedirectRole();
           }

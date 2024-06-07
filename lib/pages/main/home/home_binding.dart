@@ -7,9 +7,10 @@ import 'package:get/get.dart';
 
 class HomeBinding implements Bindings {
   @override
-  void dependencies() {
-    Get.put<HomeController>(HomeController());
+  void dependencies() async {
     Get.put<MapController>(MapController());
+    Get.put<HomeController>(HomeController());
+
     Get.lazyPut<WalletController>(() => WalletController());
   }
 }

@@ -155,7 +155,7 @@ class HomeController extends GetxController {
   bool get isShowInfo => isAccept || isArrived || isOnGoing || isCheckInOrOut;
   bool get isFromOnGoingToComplete => isOnGoing || isCheckInOrOut || isComplete;
   // isAccept || isArrived || isOnGoing || (!isDriver && isCheckInOrOut);
-  bool get isAvailableCancel => isAccept || isArrived || isCheckInOrOut;
+  bool get isAvailableCancel => isAccept || isArrived || isCheckIn;
   bool get isAvailableEmergency => isOnGoing || isCheckOut;
   //Customer
   bool get isSearchRequest => isPending || isShowDriver;
@@ -175,6 +175,9 @@ class HomeController extends GetxController {
     await InternetChecker.startListening();
     await SignalRService.initialize();
     await initLocation();
+    if (!isDriver) {
+      await checkIsFromTerminated();
+    }
 
     controllers =
         List.generate(noteTypes.length, (_) => TextEditingController());
@@ -313,7 +316,7 @@ class HomeController extends GetxController {
     }
   }
 
-  void initCustomer(LocationData locationData) async {
+  Future<void> initCustomer(LocationData locationData) async {
     final address = await mapPageController
         .convertGeoGraphicCoOrdinatesIntoHumanReadableAddress(locationData);
     mapPageController.state.currentAddress.value = address;

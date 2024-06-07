@@ -19,13 +19,14 @@ class CreateNewProfileCustomer extends GetView<CustomerRegisterController> {
       'Female': 'Nữ',
       'Other': 'Khác'
     };
-    
+
     return Obx(
       () => Scaffold(
         appBar: AppBar(
           title: Text(''),
           scrolledUnderElevation: 0,
           backgroundColor: Colors.white,
+          automaticallyImplyLeading: false,
         ),
         body: SingleChildScrollView(
           child: Padding(

@@ -18,6 +18,7 @@ class CreateNewInfoCustomer extends GetView<CustomerSignInController> {
           title: Text('Đăng ký người dùng'),
           scrolledUnderElevation: 0,
           backgroundColor: Colors.white,
+          automaticallyImplyLeading: false,
         ),
         body: SingleChildScrollView(
           child: Padding(
