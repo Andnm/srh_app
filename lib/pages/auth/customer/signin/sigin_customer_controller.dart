@@ -38,9 +38,9 @@ class CustomerSignInController extends GetxController {
   @override
   void onInit() async {
     super.onInit();
+    await InternetChecker.startListening();
     SystemChrome.setPreferredOrientations(
         [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
-    await InternetChecker.startListening();
   }
 
   bool isValidPhoneNumberWhenLogin() {

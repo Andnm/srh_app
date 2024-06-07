@@ -337,6 +337,7 @@ class HomeController extends GetxController {
 
   Future<void> updateStatusDriver({required bool isOnline}) async {
     try {
+      await sendDriverLocationToBackend();
       if (isOnline) {
         var onlineDriver = await DriverAPI.switchToOnline();
 
@@ -347,7 +348,6 @@ class HomeController extends GetxController {
         print('Deactivated');
       }
 
-      await sendDriverLocationToBackend();
       state.isAvailableDriver.value = isOnline;
     } catch (e) {
       print('Driver status: $e ');
@@ -2019,6 +2019,9 @@ class HomeController extends GetxController {
   }
 
   void onClose() async {
+    if (isDriver) {
+      await updateStatusDriver(isOnline: false);
+    }
     if (cameraController != null && cameraController!.value.isInitialized) {
       cameraController?.dispose();
     }
@@ -2027,10 +2030,6 @@ class HomeController extends GetxController {
     print("on close home controller");
     await InternetChecker.stopListening();
     cameraController?.dispose();
-    if (isDriver) {
-      await updateStatusDriver(isOnline: false);
-    }
-    await SignalRService.disconnect();
 
     await Global.removeFcmToken();
     await UserStore.to.clearStorage();

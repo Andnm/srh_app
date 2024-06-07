@@ -5,6 +5,7 @@ import 'package:cus_dbs_app/common/apis/fcm_token_api.dart';
 import 'package:cus_dbs_app/common/entities/fcm_token.dart';
 import 'package:cus_dbs_app/firebase_options.dart';
 import 'package:cus_dbs_app/services/socket_service.dart';
+import 'package:dio/dio.dart';
 
 import 'package:flutter/material.dart';
 
@@ -57,7 +58,8 @@ class Global {
   }
 
   static Future removeFcmToken() async {
-    FirebaseMessaging.instance.getToken().then((token) async {
+    try {
+      String? token = await FirebaseMessaging.instance.getToken();
       if (token != null) {
         FcmTokenModel fcmTokenModel = FcmTokenModel(fcmToken: token);
         print(" token after delete: $token");
@@ -65,8 +67,19 @@ class Global {
             await FcmTokenAPI.removeFcmTokenFromServer(params: fcmTokenModel);
         print('Response remove token: $response');
       }
-    }).onError((error, stackTrace) {
-      Get.snackbar("Error", " Remove FCM token: $error");
-    });
+    } catch (error) {
+      print('Error removing FCM token: $error');
+      if (error is DioError) {
+        if (error.response?.statusCode == 401) {
+          print('Token đã hết hạn hoặc không hợp lệ');
+        } else {
+          print('Lỗi khi xóa FCM token: ${error.response?.statusCode}');
+        }
+      } else {
+        print('Lỗi không xác định khi xóa FCM token');
+      }
+
+      throw error;
+    }
   }
 }

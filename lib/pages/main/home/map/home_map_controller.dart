@@ -31,6 +31,7 @@ import 'values/api_map_constants.dart';
 
 class MapController extends GetxController {
   final state = MapState();
+  Location location = Location();
   GoogleMapController? controllerOfGoogleMap;
   RxBool myLocationEnabled = true.obs;
   LocationData? previousLocation;
@@ -137,8 +138,6 @@ class MapController extends GetxController {
   }
 
   Future<void> getCurrentLocation(VoidCallback callbackSuccess) async {
-    Location location = Location();
-
     await location.getLocation().then(
       (location) async {
         state.currentLocation.value = location;
@@ -772,6 +771,7 @@ class MapController extends GetxController {
   void onClose() {
     // mapCompletePageController = Completer();
     // controllerOfGoogleMap?.dispose();
+
     super.onClose();
   }
 }

@@ -29,7 +29,7 @@ class InternetChecker {
 
   static Future<void> showInternetDialog() async {
     await Get.dialog(
-      barrierDismissible: false,
+      barrierDismissible: true,
       WillPopScope(
         onWillPop: () async => false,
         child: AlertDialog(
