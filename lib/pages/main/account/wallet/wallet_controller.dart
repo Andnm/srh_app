@@ -27,6 +27,7 @@ class WalletController extends GetxController with WidgetsBindingObserver {
   @override
   void onInit() async {
     super.onInit();
+    await handleInitialProcessingUserWallet();
   }
 
   Future<void> handleInitialProcessingUserWallet() async {
@@ -216,9 +217,8 @@ class WalletController extends GetxController with WidgetsBindingObserver {
     } else {
       //kiểm tra nếu như số tiền muốn rút lớn hơn số tiền hiện đang có trong SecureWallet
       num? amount = convertAmountFromStringToNum(amountController.text.trim());
-      
-      if (amount! >
-          state.currentMoney.value) {
+
+      if (amount! > state.currentMoney.value) {
         _linkedAccountController.state.errorLinkedAccount.value = state
                 .errorFormatAmount.value =
             'Vui lòng nhập số tiền muốn rút phải nhỏ hơn hoặc bằng số tiền hiện có trong ví';
