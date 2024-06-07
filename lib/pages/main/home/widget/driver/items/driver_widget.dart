@@ -220,7 +220,8 @@ class DriverWidget extends StatelessWidget {
     return Stack(
       children: [
         SizedBox(
-          height: Get.height * 0.9, // Chiếm 70% chiều cao của màn hình
+          height: Get.height * 0.9,
+          width: Get.width, // Chiếm 70% chiều cao của màn hình
           child: GetBuilder<HomeController>(
             builder: (controller) {
               if (controller.cameraController == null ||
@@ -852,6 +853,7 @@ class DriverWidget extends StatelessWidget {
             children: [
               Expanded(
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     CircleAvatar(
                       radius: 25.r,
@@ -865,7 +867,7 @@ class DriverWidget extends StatelessWidget {
                     Text(
                       controller.customerInfo?.name ?? '',
                       style: TextStyle(
-                        fontSize: 16.sp,
+                        fontSize: 14.sp,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -920,7 +922,7 @@ class DriverWidget extends StatelessWidget {
                           Text(
                             "Địa chỉ",
                             style: TextStyle(
-                              fontSize: 20.sp,
+                              fontSize: 16.sp,
                               fontWeight: FontWeight.bold,
                               color: AppColors.primaryText,
                             ),
@@ -991,7 +993,7 @@ class DriverWidget extends StatelessWidget {
                   Text(
                     controller.customerOnBehalfInfo?.name ?? '',
                     style: TextStyle(
-                      fontSize: 16.sp,
+                      fontSize: 14.sp,
                       fontWeight: FontWeight.bold,
                     ),
                   ),

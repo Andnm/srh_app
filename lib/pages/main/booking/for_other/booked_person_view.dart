@@ -108,7 +108,7 @@ class BookedPersonInformationPage extends GetView<BookedPersonController> {
                                       ),
                                       SizedBox(height: 5),
                                       Text(
-                                        'Tải ảnh lên',
+                                        'Ảnh khách hàng',
                                         style: TextStyle(
                                           color: Colors.grey[600],
                                           fontSize: 16,
@@ -203,7 +203,7 @@ class BookedPersonInformationPage extends GetView<BookedPersonController> {
                   Center(
                       child: Center(
                     child: Text(
-                      'Thông tin xe',
+                      'Thông tin phương tiện',
                       style: TextStyle(
                         fontSize: 19.6.sp,
                         fontWeight: FontWeight.bold,
@@ -248,7 +248,7 @@ class BookedPersonInformationPage extends GetView<BookedPersonController> {
                                       ),
                                       SizedBox(height: 5),
                                       Text(
-                                        'Tải ảnh lên',
+                                        'Ảnh phương tiện',
                                         style: TextStyle(
                                           color: Colors.grey[600],
                                           fontSize: 16,

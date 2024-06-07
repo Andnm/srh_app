@@ -522,7 +522,7 @@ class CustomerWidget extends StatelessWidget {
                 Text(
                   controller.driverInfo?.name ?? '',
                   style: TextStyle(
-                    fontSize: 16.sp,
+                    fontSize: 14.sp,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
