@@ -117,9 +117,7 @@ class VehicleController extends GetxController {
         state.addImageLeft.value != null &&
         state.addImageRight.value != null &&
         colorController.text.isNotEmpty &&
-        licensePlateController.text.isNotEmpty &&
-        brandController.text.isNotEmpty &&
-        modelController.text.isNotEmpty;
+        licensePlateController.text.isNotEmpty;
   }
 
   //Gallery
