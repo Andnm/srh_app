@@ -275,8 +275,9 @@ class _NotificationDialogState extends State<NotificationDialog>
                       ],
                     ),
                     Text(
-                      homeController.formatCurrency.format(homeController
-                          .state.appBookingData.value?.searchRequest?.price),
+                      homeController.formatCurrency.format(homeController.state
+                              .appBookingData.value?.searchRequest?.price ??
+                          0),
                       style: TextStyle(
                         color: AppColors.acceptColor,
                         fontSize: 18.sp,

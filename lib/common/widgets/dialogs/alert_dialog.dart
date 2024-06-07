@@ -46,10 +46,26 @@ class CustomAlertDialog extends StatelessWidget {
                   )
                 : SizedBox(),
             showTextField
-                ? TextField(
-                    controller: textController,
-                    decoration: InputDecoration(
-                      hintText: 'Enter text',
+                ? Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10.0.r),
+                    ),
+                    child: TextField(
+                      controller: textController,
+                      decoration: InputDecoration(
+                        hintText: 'Nhập',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.0.r),
+                          borderSide: BorderSide.none,
+                        ),
+                        filled: true,
+                        fillColor: AppColors.textFieldColor,
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: 16.0.w,
+                          vertical: 12.0.h,
+                        ),
+                      ),
                     ),
                   )
                 : Text(
@@ -60,10 +76,8 @@ class CustomAlertDialog extends StatelessWidget {
                       color: AppColors.primaryText.withOpacity(0.8),
                     ),
                   ),
-            Divider(
-              height: 20.0.h,
-              thickness: 1.0.h,
-              color: Colors.grey[400],
+            SizedBox(
+              height: 20.h,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -74,7 +88,7 @@ class CustomAlertDialog extends StatelessWidget {
                     backgroundColor:
                         backgroundColor ?? AppColors.primaryElement,
                     foregroundColor: AppColors.surfaceWhite,
-                    minimumSize: Size(100.0, 40.0),
+                    minimumSize: Size(100.0.w, 40.0.h),
                   ),
                   child: Text(buttonText ?? ''),
                 ),

@@ -1727,8 +1727,13 @@ class HomeController extends GetxController {
           indicator: const CircularProgressIndicator(),
           maskType: EasyLoadingMaskType.clear,
           dismissOnTap: true);
-
+      await cameraController?.setFocusMode(FocusMode.locked);
+      await cameraController?.setExposureMode(ExposureMode.locked);
       final xFile = await cameraController!.takePicture();
+
+      await cameraController?.setFocusMode(FocusMode.locked);
+      await cameraController?.setExposureMode(ExposureMode.locked);
+
       EasyLoading.dismiss();
       File pickedFile = File(xFile.path);
       state.imageFiles.add(pickedFile);
@@ -1838,6 +1843,8 @@ class HomeController extends GetxController {
                   await requestEmergencyOfCustomer(
                     emergencyInfo: emergencyInfo,
                   );
+                  emergencyNoteController.clear();
+
                   Get.back();
                   Get.back();
                 },
@@ -1873,6 +1880,8 @@ class HomeController extends GetxController {
                   await requestEmergencyOfCustomer(
                     emergencyInfo: emergencyInfo,
                   );
+                  emergencyNoteController.clear();
+
                   Get.back();
                   Get.back();
                 },
@@ -1940,6 +1949,8 @@ class HomeController extends GetxController {
                   await requestEmergencyOfDriver(
                     emergencyInfo: emergencyInfo,
                   );
+                  emergencyNoteController.clear();
+
                   Get.back();
                   Get.back();
                 },
