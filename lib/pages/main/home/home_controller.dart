@@ -1560,38 +1560,41 @@ class HomeController extends GetxController {
             pickUpLocation: mapPageController.state.pickUpLocation.value,
             dropOffLocation: mapPageController.state.driverLocation.value,
           );
-          // SignalRService.listenEvent("TrackingDriverLocation",
-          //     (arguments) async {
-          //   if (arguments is List && arguments.isNotEmpty) {
-          //     var locationData = arguments[0];
-          //     if (locationData is Map<String, dynamic>) {
-          //       double? driverLatitude = locationData['latitude'];
-          //       double? driverLongitude = locationData['longitude'];
-          //       if (driverLatitude != null && driverLongitude != null) {
-          //         await updateDriverLocationFromSocket(
-          //             newDriverLatitude: driverLatitude,
-          //             newDriverLongitude: driverLongitude);
-          //       }
-          //     }
-          //   }
-          // });
         }
 
         break;
 
       case BOOKING_STATUS.ARRIVED:
-        // print(
-        //     'ARRIVED Location: ${mapPageController.convertMyAddressDriver().toString()}');
-        // print(
-        //     'ARRIVED Location: ${mapPageController.state.dropOffLocation.toString()}');
-        //
-        // await mapPageController.retrieveMapDirectionDetails(
-        //   pickUpLocation: mapPageController.state.pickUpLocation.value,
-        //   dropOffLocation: mapPageController.state.dropOffLocation.value,
-        // );
+        if (isDriver) {
+          await mapPageController.retrieveMapDirectionDetails(
+            pickUpLocation: mapPageController.convertMyAddressDriver(),
+            dropOffLocation: mapPageController.state.pickUpLocation.value,
+          );
+        } else {
+          await mapPageController.retrieveMapDirectionDetails(
+            pickUpLocation: mapPageController.state.pickUpLocation.value,
+            dropOffLocation: mapPageController.state.driverLocation.value,
+          );
+        }
 
         break;
+
       case BOOKING_STATUS.CHECKIN:
+        if (isDriver) {
+          await mapPageController.retrieveMapDirectionDetails(
+            pickUpLocation: mapPageController.convertMyAddressDriver(),
+            dropOffLocation: mapPageController.state.pickUpLocation.value,
+          );
+          // await mapPageController.updatePolyline(
+          //     pickupLocation: mapPageController.convertMyAddressDriver()!,
+          //     dropOffLocation: mapPageController.state.pickUpLocation.value!);
+        } else {
+          await mapPageController.retrieveMapDirectionDetails(
+            pickUpLocation: mapPageController.state.pickUpLocation.value,
+            dropOffLocation: mapPageController.state.driverLocation.value,
+          );
+        }
+
         break;
       case BOOKING_STATUS.ONGOING:
         if (!isDriver) {
@@ -1610,13 +1613,20 @@ class HomeController extends GetxController {
         break;
       case BOOKING_STATUS.CHECKOUT:
         if (!isDriver) {
-          // mapPageController.myLocationEnabled.value = false;
+          mapPageController.myLocationEnabled.value = false;
           await mapPageController.retrieveMapDirectionDetails(
             pickUpLocation: mapPageController.state.driverLocation.value,
             dropOffLocation: mapPageController.state.dropOffLocation.value,
           );
+        } else {
+          await mapPageController.retrieveMapDirectionDetails(
+            pickUpLocation: mapPageController.convertMyAddressDriver(),
+            dropOffLocation: mapPageController.state.dropOffLocation.value,
+          );
         }
+
         break;
+
       default:
         break;
     }
