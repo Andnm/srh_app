@@ -920,7 +920,7 @@ class DriverWidget extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Text(
-                            "Địa chỉ",
+                            "Số điện thoại",
                             style: TextStyle(
                               fontSize: 16.sp,
                               fontWeight: FontWeight.bold,
@@ -928,7 +928,7 @@ class DriverWidget extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            controller.customerInfo?.address ?? "Hồ Chí Minh",
+                            controller.customerInfo?.phoneNumber ?? "Unknown",
                             style: TextStyle(
                               fontSize: 14.sp,
                               color: Colors.grey,
