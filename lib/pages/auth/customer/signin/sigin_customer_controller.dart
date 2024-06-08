@@ -157,7 +157,7 @@ class CustomerSignInController extends GetxController {
 
           await asyncPostAllDataCustomer(externalLogin);
           final phoneNumber = UserStore.to.customerProfile.phoneNumber;
-
+          print("PHONE NUMBER CHECK $phoneNumber");
           if (phoneNumber == '' || phoneNumber == null) {
             Get.toNamed(AppRoutes.createInfoAfterLoginWithEmailPassword);
           } else {
@@ -315,7 +315,7 @@ class CustomerSignInController extends GetxController {
           maskType: EasyLoadingMaskType.clear,
           dismissOnTap: true);
       var result = await CustomerAPI.login(params: externalLogin);
-
+      print("RESULT CHECK $result");
       if (result.access_token != null) {
         await UserStore.to.saveCustomerProfile(CustomerItem(
             access_token: result.access_token,

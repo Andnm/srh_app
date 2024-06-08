@@ -716,7 +716,7 @@ class DriverWidget extends StatelessWidget {
                               ((controller.state.driverPersonalInfo.priority ??
                                           2) <=
                                       1)
-                                  ? "Bạn đã hủy quá nhiều chuyến trước đó. Nếu hủy chuyến này, bạn sẽ bị trừ 10% tổng số tiền của chuyến đi này. Hãy cân nhắc kỹ."
+                                  ? "Bạn đã hủy quá nhiều chuyến trước đó. Nếu hủy chuyến này, bạn sẽ bị giảm ưu tiên cho các chuyến đi tiếp theo."
                                   : 'Bạn có chắc chắn muốn hủy chuyến đi?',
                               textAlign: TextAlign.center,
                             ),

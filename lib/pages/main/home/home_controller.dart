@@ -625,7 +625,6 @@ class HomeController extends GetxController {
 
   Future<void> findDriverToSearchRequest() async {
     try {
-      updateBookingStatus(BOOKING_STATUS.SEARCH_DRIVER);
       await getAvailableNearbyOnlineDrivers();
       if (await checkAvailableDriver()) {
         if (isBookByMySelfStatusForCustomer) {
@@ -691,6 +690,7 @@ class HomeController extends GetxController {
             params: state.requestSearchRequestModel);
 
         if (searchRequestId != null) {
+          updateBookingStatus(BOOKING_STATUS.SEARCH_DRIVER);
           state.requestSearchRequestModel.id = searchRequestId;
           // nhận search id từ notification
           state.appBookingData.value =
@@ -1812,7 +1812,7 @@ class HomeController extends GetxController {
             isDefaultAction: true,
             onPressed: () async {
               Emergency emergencyInfo = Emergency(
-                  senderAddress: "",
+                  senderAddress: mapPageController.state.currentAddress.value,
                   booking: state.appBookingData.value,
                   emergencyType: EMERGENCY_TYPE.POLICE.type);
               await sendCustomerLocationToBackend();
@@ -1928,7 +1928,7 @@ class HomeController extends GetxController {
             isDefaultAction: true,
             onPressed: () async {
               Emergency emergencyInfo = Emergency(
-                  senderAddress: "",
+                  senderAddress: mapPageController.state.currentAddress.value,
                   booking: state.appBookingData.value,
                   emergencyType: EMERGENCY_TYPE.POLICE.type);
               await sendDriverLocationToBackend();

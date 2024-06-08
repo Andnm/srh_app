@@ -72,7 +72,6 @@ class MapController extends GetxController {
   }
 
   Future<void> handleTerminatedAppData() async {
-    homeController.updateBookingStatus(BOOKING_STATUS.SEARCH_DRIVER);
     await homeController.getAvailableNearbyOnlineDriversTerminatedApp(
         isFemaleDriver:
             homeController.state.requestSearchRequestModel.isFemaleDriver);
@@ -85,6 +84,9 @@ class MapController extends GetxController {
           searchRequestId: homeController.state.requestSearchRequestModel.id,
           driverId:
               homeController.state.availableNearbyOnlineDriversList[0].id);
+      if (response) {
+        homeController.updateBookingStatus(BOOKING_STATUS.SEARCH_DRIVER);
+      }
       homeController.removeDriverFromList(
           homeController.state.availableNearbyOnlineDriversList[0].id);
 
