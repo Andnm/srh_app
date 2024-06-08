@@ -3,6 +3,7 @@ import 'package:cus_dbs_app/pages/main/account/payment/linked_account_controller
 import 'package:cus_dbs_app/pages/main/account/wallet/wallet_controller.dart';
 import 'package:cus_dbs_app/routes/routes.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:get/get.dart';
 
@@ -37,7 +38,7 @@ class SelectedMethodPayment extends GetView<LinkedAccountController> {
               color: Colors.grey.shade400,
             ),
             Padding(
-              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+              padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 15.w),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -45,41 +46,41 @@ class SelectedMethodPayment extends GetView<LinkedAccountController> {
                   Text(
                     'Phương thức thanh toán khả dụng',
                     style: TextStyle(
-                      fontSize: 18.0,
+                      fontSize: 18.0.sp,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
-                  SizedBox(height: 16.0),
+                  SizedBox(height: 16.0.h),
                   _buildPaymentMethodOption(
                     context,
                     'VNPay',
                     'assets/icons/vnpay.png',
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: 20.h),
                   _buildPaymentMethodOption(
                     context,
                     'MoMo',
                     'assets/icons/momo.png',
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: 20.h),
                   _buildPaymentMethodOption(
                     context,
                     'SecureWallet',
                     'assets/icons/wallet.png',
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: 20.h),
                   _buildPaymentMethodOption(
                     context,
                     'Thẻ ATM',
                     'assets/icons/atm.png',
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: 20.h),
                 ],
               ),
             ),
             DividerCustom(),
             Padding(
-              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+              padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 15.w),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -87,23 +88,23 @@ class SelectedMethodPayment extends GetView<LinkedAccountController> {
                   Text(
                     'Thêm phương thức thanh toán',
                     style: TextStyle(
-                      fontSize: 18.0,
+                      fontSize: 18.0.sp,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
-                  SizedBox(height: 16.0),
+                  SizedBox(height: 16.0.h),
                   _buildAddMorePaymentMethodOption(
                     context,
                     'Thẻ quốc tế',
                     'assets/icons/visa_card.png',
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: 20.h),
                   _buildAddMorePaymentMethodOption(
                     context,
                     'Viettel Money',
                     'assets/icons/viettel_money.png',
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: 20.h),
                 ],
               ),
             ),
@@ -129,11 +130,11 @@ class SelectedMethodPayment extends GetView<LinkedAccountController> {
             : null,
         child: Row(
           children: [
-            Image.asset(iconPath, height: 40, width: 40, fit: BoxFit.cover),
-            SizedBox(width: 15),
+            Image.asset(iconPath, height: 40.h, width: 40.w, fit: BoxFit.cover),
+            SizedBox(width: 15.w),
             Text(
               title,
-              style: TextStyle(fontSize: 16),
+              style: TextStyle(fontSize: 16.sp),
             ),
             Spacer(),
             if (_walletController.state.selectedPaymentMethod == title &&
@@ -141,7 +142,7 @@ class SelectedMethodPayment extends GetView<LinkedAccountController> {
               Icon(
                 Icons.check,
                 color: Colors.blue.shade400,
-                size: 26,
+                size: 26.sp,
               ),
             if (!_homeController.isEnoughMoney && title == 'SecureWallet')
               ElevatedButton(
@@ -171,17 +172,17 @@ class SelectedMethodPayment extends GetView<LinkedAccountController> {
       onTap: () {},
       child: Row(
         children: [
-          Image.asset(iconPath, height: 40, width: 40, fit: BoxFit.cover),
-          SizedBox(width: 15),
+          Image.asset(iconPath, height: 40.h, width: 40.w, fit: BoxFit.cover),
+          SizedBox(width: 15.w),
           Text(
             title,
-            style: TextStyle(fontSize: 16),
+            style: TextStyle(fontSize: 16.sp),
           ),
           Spacer(),
           Icon(
             Icons.arrow_forward_ios,
             color: Colors.black,
-            size: 16,
+            size: 16.sp,
           ),
         ],
       ),
