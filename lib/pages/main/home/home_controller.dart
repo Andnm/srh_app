@@ -1718,6 +1718,7 @@ class HomeController extends GetxController {
         ),
       );
       mapPageController.myLocationEnabled.value = true;
+      isDoneCaptured.value = false;
     });
   }
 
