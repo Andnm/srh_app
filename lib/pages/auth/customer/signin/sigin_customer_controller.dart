@@ -217,13 +217,21 @@ class CustomerSignInController extends GetxController {
       var externalLogin =
           CustomerExternalLogin(idToken: idToken, provider: providerId);
 
-      var phoneNumber = "+84${myInputPhoneController.text}";
-      print('Phone number to check: $phoneNumber');
-      final dataPhoneNumber = {"phoneNumber": phoneNumber};
+      var phoneNumber = "+84";
 
+      if (myInputPhoneController.text.startsWith('0')) {
+        phoneNumber += myInputPhoneController.text.substring(1);
+      } else {
+        phoneNumber += myInputPhoneController.text;
+      }
+
+      print("myInputPhoneController.text: ${myInputPhoneController.text}");
+
+      final dataPhoneNumber = {"phoneNumber": phoneNumber};
       state.existPhoneNumber.value =
           await CustomerAPI.checkExistUserWithPhoneNumber(
               phoneNumber: dataPhoneNumber);
+      print("CCHECK hehe ${state.existPhoneNumber.value}");
 
       if (state.existPhoneNumber.value == true) {
         await asyncPostAllDataCustomer(externalLogin);
