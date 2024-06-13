@@ -231,7 +231,7 @@ class NotificationCustomer {
     id = json['Id'];
     name = json['Name'];
     avatar = json['Avatar'];
-    phoneNumber = json['PhoneNumber'] is Map ? json['PhoneNumber'] : null;
+    phoneNumber = json['PhoneNumber'];
     userName = json['UserName'];
     email = json['Email'];
     address = json['Address'];
